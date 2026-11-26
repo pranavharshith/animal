@@ -281,7 +281,7 @@ function SpeciesCard({ entry: s, order, reduced, onOpen }: { entry: SpeciesEntry
         </div>
         <div className="arc-art">
           <span className="arc-sil-glow" aria-hidden />
-          <CreatureSVG genome={s.genome} size="100%" animated={false} lite silhouette shadow={false} />
+          <CreatureSVG genome={s.genome} size="100%" animated={false} lite silhouette shadow={false} framing="tight" />
         </div>
         <div className="arc-name">???</div>
         <div className="arc-sub">
@@ -305,7 +305,7 @@ function SpeciesCard({ entry: s, order, reduced, onOpen }: { entry: SpeciesEntry
       </div>
       <div className="arc-art">
         <span className="arc-glow" aria-hidden />
-        <CreatureSVG genome={s.genome} stage={s.stage} size="100%" animated={false} lite />
+        <CreatureSVG genome={s.genome} stage={s.stage} size="100%" animated={false} lite framing="tight" />
       </div>
       <div className="arc-name">{speciesName(s.body, s.element)}</div>
       <div className="arc-sub">

@@ -1,7 +1,8 @@
 // Procedural creature renderer. Pure SVG, deterministic from the genome.
 import { memo, useId, useMemo, type CSSProperties, type ReactNode, type SVGAttributes } from 'react';
+import { displayColors } from '../engine/color';
 import { ELEMENT_INFO, hsl } from '../engine/data';
-import { hashSeed, mulberry32, range, type Rng } from '../engine/rng';
+import { hashSeed, lerpHue, mulberry32, range, type Rng } from '../engine/rng';
 import type { Genome, Personality, Stage } from '../engine/types';
 import { buildAnatomy, GROUND, type Anatomy, type Hip, type Shape } from './anatomy';
 import './creature.css';
@@ -16,6 +17,8 @@ export interface CreatureSVGProps {
   lite?: boolean;
   silhouette?: boolean;
   personality?: Personality;
+  /** 'tight' crops empty space around the organism (cards, grids). */
+  framing?: 'full' | 'tight';
   shadow?: boolean;
   className?: string;
   style?: CSSProperties;
@@ -39,6 +42,10 @@ interface Palette {
   bone: string;
   el: string;
   el2: string;
+  /** Soft crease line used where outlines were removed. */
+  crease: string;
+  /** Rim light colour (ambient lab light catching the top edge). */
+  rim: string;
 }
 
 interface Ctx {
@@ -51,6 +58,12 @@ interface Ctx {
   lite: boolean;
   sil: boolean;
   animated: boolean;
+  /** Dominant personality: drives eye style + idle. */
+  mood: Personality;
+  /** True when the body is drawn with one joined silhouette outline. */
+  joined: boolean;
+  /** Wings tuck behind the body (round / bell bodies). */
+  tuck: boolean;
 }
 
 const f1 = (n: number) => n.toFixed(1);
@@ -59,28 +72,32 @@ function makePalette(g: Genome, sil: boolean): Palette {
   const el = ELEMENT_INFO[g.element];
   if (sil) {
     const d = '#070a14';
-    return { body: d, bodyLight: d, bodyDark: d, far: '#05070e', outline: '#27345a', sec: d, secLight: d, secDark: d, acc: '#1b2440', accLight: '#1b2440', eyeWhite: d, iris: d, pupil: d, bone: d, el: '#3b4a78', el2: '#3b4a78' };
+    return { body: d, bodyLight: d, bodyDark: d, far: '#05070e', outline: '#27345a', sec: d, secLight: d, secDark: d, acc: '#1b2440', accLight: '#1b2440', eyeWhite: d, iris: d, pupil: d, bone: d, el: '#3b4a78', el2: '#3b4a78', crease: 'transparent', rim: '#3b4a78' };
   }
-  const p = g.primary;
-  const s = g.secondary;
-  const ac = g.accent;
+  // Gentle draw-time harmony (anomalies are exempt inside displayColors).
+  const { primary: p, secondary: s, accent: ac } = displayColors(g);
+  // Tinted outline: the body hue nudged toward indigo, very dark but never pure black.
+  const outlineHue = lerpHue(p.h, 250, 0.38);
+  const outline = hsl({ h: outlineHue, s: Math.min(55, p.s * 0.8 + 10), l: 15 + Math.max(0, p.l - 45) * 0.15 });
   return {
     body: hsl(p),
-    bodyLight: hsl(p, 16, 4),
-    bodyDark: hsl(p, -18, -6),
-    far: hsl(p, -16, -10),
-    outline: hsl({ h: p.h, s: Math.min(60, p.s), l: Math.max(8, p.l - 38) }),
+    bodyLight: hsl(p, 14, 4),
+    bodyDark: hsl({ h: lerpHue(p.h, 250, 0.15), s: p.s, l: p.l }, -17, -4),
+    far: hsl({ h: lerpHue(p.h, 250, 0.2), s: p.s, l: p.l }, -15, -12),
+    outline,
     sec: hsl(s),
-    secLight: hsl(s, 14),
-    secDark: hsl(s, -16),
+    secLight: hsl(s, 12),
+    secDark: hsl(s, -15),
     acc: hsl(ac),
-    accLight: hsl(ac, 14),
+    accLight: hsl(ac, 12),
     eyeWhite: hsl({ h: ac.h, s: 40, l: 96 }),
-    iris: hsl({ h: ac.h, s: Math.max(70, ac.s), l: Math.min(62, ac.l) }),
-    pupil: '#0b0a16',
-    bone: hsl({ h: (p.h + 30) % 360, s: 25, l: 88 }),
+    iris: hsl({ h: ac.h, s: Math.max(78, ac.s), l: Math.min(64, ac.l) }),
+    pupil: hsl({ h: outlineHue, s: 45, l: 6 }),
+    bone: hsl({ h: (p.h + 30) % 360, s: 22, l: 86 }),
     el: el.color,
     el2: el.color2,
+    crease: hsl({ h: outlineHue, s: 45, l: 18 }, 0, 0, 0.38),
+    rim: hsl({ h: lerpHue(ac.h, 190, 0.3), s: 70, l: 86 }),
   };
 }
 
@@ -95,41 +112,56 @@ function Limb({ x: ctx, hip, i, scale = 1 }: { x: Ctx; hip: Hip; i: number; scal
   const fill = hip.far ? c.far : c.body;
   const L = a.legLen * scale;
   const footY = a.floats ? hip.y + L : GROUND - 2;
-  const delay = `${(i * 0.37) % 2}s`;
+  // Follow-through: limbs lag a little behind the 3.4s breathing cycle.
+  const delay = `${(-(3.4 - 0.35 - (i % 4) * 0.12)).toFixed(2)}s`;
+  const front = hip.x >= a.torso.cx;
   switch (g.limbs) {
     case 'stout': {
-      const fx = hip.x + hip.splay * 4 + 2;
       const w = 11 * g.girth * scale;
+      const y0 = hip.y - 7;
+      const fx = hip.x + hip.splay * 4 + (front ? 2 : -1);
+      const bend = front ? 2.5 : -3.5; // rear legs kink back at the hock
+      const wT = w * 1.35;
+      const wB = w * 0.7;
+      const mid = y0 + (footY - 4 - y0) * 0.55;
+      const d = `M${f1(hip.x - wT / 2)},${f1(y0)} Q${f1(hip.x + bend - wT * 0.42)},${f1(mid)} ${f1(fx - wB / 2)},${f1(footY - 4)} L${f1(fx + wB / 2)},${f1(footY - 4)} Q${f1(hip.x + bend + wT * 0.4)},${f1(mid)} ${f1(hip.x + wT / 2)},${f1(y0)}Z`;
       return (
         <g>
-          <line x1={hip.x} y1={hip.y} x2={fx} y2={footY - 3} stroke={c.outline} strokeWidth={w + 3.5} strokeLinecap="round" />
-          <line x1={hip.x} y1={hip.y} x2={fx} y2={footY - 3} stroke={fill} strokeWidth={w} strokeLinecap="round" />
-          <ellipse cx={fx + 3} cy={footY - 2} rx={w * 0.78} ry={w * 0.38} fill={fill} stroke={c.outline} strokeWidth={1.6} />
-          {!hip.far && !ctx.sil && [0, 1, 2].map((k) => <circle key={k} cx={fx + 3 + (k - 0.2) * w * 0.38} cy={footY - 1} r={1.3} fill={c.accLight} />)}
+          <path d={d} fill={fill} stroke={c.outline} strokeWidth={1.9} strokeLinejoin="round" />
+          {!hip.far && !ctx.sil && <path d={`M${f1(hip.x + wT * 0.28)},${f1(y0 + 8)} Q${f1(hip.x + bend + wT * 0.26)},${f1(mid)} ${f1(fx + wB * 0.3)},${f1(footY - 7)}`} stroke={c.bodyLight} strokeWidth={1.6} fill="none" strokeLinecap="round" opacity={0.55} />}
+          <ellipse cx={fx + 2.5} cy={footY - 2.6} rx={wB * 1.0} ry={wB * 0.5} fill={fill} stroke={c.outline} strokeWidth={1.7} />
+          {!hip.far && !ctx.sil && [0, 1, 2].map((k) => <circle key={k} cx={fx + 2.5 + (k - 0.6) * wB * 0.55} cy={footY - 1.2} r={1.2} fill={c.accLight} />)}
         </g>
       );
     }
     case 'spindly': {
       const arth = g.body === 'arthropod';
-      const kx = hip.x + (arth ? hip.splay * 12 + 8 : 7);
+      const kx = hip.x + (arth ? hip.splay * 12 + 8 : front ? 7 : -6);
       const ky = arth ? hip.y - 9 : hip.y + (footY - hip.y) * 0.45;
-      const fx = hip.x + (arth ? hip.splay * 20 + 6 : -2);
+      const fx = hip.x + (arth ? hip.splay * 20 + 6 : front ? -1 : 2);
+      const seg = (x1: number, y1: number, x2: number, y2: number, wv: number, col: string) => <line x1={f1(x1)} y1={f1(y1)} x2={f1(x2)} y2={f1(y2)} stroke={col} strokeWidth={wv * scale} strokeLinecap="round" />;
       return (
         <g>
-          <polyline points={`${f1(hip.x)},${f1(hip.y)} ${f1(kx)},${f1(ky)} ${f1(fx)},${f1(footY)}`} fill="none" stroke={c.outline} strokeWidth={6 * scale} strokeLinecap="round" strokeLinejoin="round" />
-          <polyline points={`${f1(hip.x)},${f1(hip.y)} ${f1(kx)},${f1(ky)} ${f1(fx)},${f1(footY)}`} fill="none" stroke={fill} strokeWidth={3.6 * scale} strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx={kx} cy={ky} r={2.6 * scale} fill={hip.far ? c.far : c.secDark} stroke={c.outline} strokeWidth={1} />
+          {seg(hip.x, hip.y - 3, kx, ky, 7.4, c.outline)}
+          {seg(kx, ky, fx, footY, 5, c.outline)}
+          {seg(hip.x, hip.y - 3, kx, ky, 5.2, fill)}
+          {seg(kx, ky, fx, footY, 2.9, fill)}
+          <circle cx={kx} cy={ky} r={2.5 * scale} fill={hip.far ? c.far : c.secDark} stroke={c.outline} strokeWidth={1} />
           {!arth && <path d={`M${f1(fx - 5)},${f1(footY + 1)} L${f1(fx)},${f1(footY - 1)} L${f1(fx + 6)},${f1(footY + 1)}`} stroke={c.outline} strokeWidth={2.2} fill="none" strokeLinecap="round" />}
         </g>
       );
     }
     case 'tentacles': {
       const sway = i % 2 ? 1 : -1;
-      const d = `M${f1(hip.x)},${f1(hip.y)} C${f1(hip.x + 9 * sway)},${f1(hip.y + L * 0.35)} ${f1(hip.x - 9 * sway)},${f1(hip.y + L * 0.7)} ${f1(hip.x + 4 * sway)},${f1(hip.y + L)} q${f1(4 * sway)},3 ${f1(6 * sway)},-2`;
+      const d = `M${f1(hip.x)},${f1(hip.y - 3)} C${f1(hip.x + 9 * sway)},${f1(hip.y + L * 0.35)} ${f1(hip.x - 9 * sway)},${f1(hip.y + L * 0.7)} ${f1(hip.x + 4 * sway)},${f1(hip.y + L)} q${f1(4 * sway)},3 ${f1(6 * sway)},-2`;
+      const col = hip.far ? c.far : c.sec;
+      // Taper: a thicker stroke over the first half of the same path.
       return (
         <g className={ctx.animated ? 'cr-tentacle' : undefined} style={{ transformOrigin: `${f1(hip.x)}px ${f1(hip.y)}px`, animationDelay: delay }}>
-          <path d={d} fill="none" stroke={c.outline} strokeWidth={7 * scale} strokeLinecap="round" />
-          <path d={d} fill="none" stroke={hip.far ? c.far : c.sec} strokeWidth={4.6 * scale} strokeLinecap="round" />
+          <path d={d} fill="none" stroke={c.outline} strokeWidth={6.2 * scale} strokeLinecap="round" />
+          <path d={d} fill="none" stroke={c.outline} strokeWidth={8.4 * scale} strokeLinecap="round" pathLength={100} strokeDasharray="52 100" />
+          <path d={d} fill="none" stroke={col} strokeWidth={3.8 * scale} strokeLinecap="round" />
+          <path d={d} fill="none" stroke={col} strokeWidth={6 * scale} strokeLinecap="round" pathLength={100} strokeDasharray="50 100" />
           {!ctx.sil && !hip.far && <path d={d} fill="none" stroke={c.accLight} strokeWidth={1.2} strokeDasharray="1 5" strokeLinecap="round" opacity={0.9} />}
         </g>
       );
@@ -166,7 +198,9 @@ function Wing({ x: ctx, far }: { x: Ctx; far: boolean }) {
   const root = a.back;
   const cls = ctx.animated ? (g.back === 'insect_wings' ? 'cr-flutter' : 'cr-flap') : undefined;
   const style: CSSProperties = { transformOrigin: `${f1(root.x)}px ${f1(root.y)}px`, animationDelay: far ? '0.08s' : '0s' };
-  const tx = `translate(${f1(root.x + (far ? 7 : 0))} ${f1(root.y - (far ? 3 : 0))}) rotate(${far ? 12 : 0})`;
+  // Round and bell bodies tuck both wings behind their curvature instead of floating them off the back.
+  const tuckY = ctx.tuck ? 6 : 0;
+  const tx = `translate(${f1(root.x + (far ? 7 : 0))} ${f1(root.y + tuckY - (far ? 3 : 0))}) rotate(${(far ? 12 : 0) + (ctx.tuck ? -8 : 0)})${ctx.tuck ? ' scale(0.9)' : ''}`;
   if (g.back === 'insect_wings') {
     const op = ctx.sil ? 1 : far ? 0.35 : 0.55;
     return (
@@ -204,19 +238,22 @@ function BehindBack({ x: ctx }: { x: Ctx }) {
   const { g, a, c } = ctx;
   const tl = a.topLine;
   if (g.back === 'dorsal_fin') {
-    const s = tl[1];
-    const e = tl[tl.length - 2];
+    // Swept-back fin: convex leading edge from the front, concave trailing edge to the rear.
+    const rear = tl[1];
+    const frontP = tl[tl.length - 2];
     const m = tl[Math.floor(tl.length / 2)];
-    const h = 22 * g.height;
-    const peak = { x: m.x - 6, y: m.y - h };
+    const h = (g.body === 'jelly' ? 17 : 22) * g.height;
+    const peak = { x: rear.x + (frontP.x - rear.x) * 0.12 - h * 0.35, y: m.y - h };
+    const d = `M${f1(frontP.x)},${f1(frontP.y + 5)} C${f1(frontP.x - (frontP.x - peak.x) * 0.25)},${f1(frontP.y - h * 0.55)} ${f1(peak.x + (frontP.x - peak.x) * 0.45)},${f1(peak.y - 3)} ${f1(peak.x)},${f1(peak.y)} Q${f1(peak.x + 6)},${f1(peak.y + h * 0.62)} ${f1(rear.x)},${f1(rear.y + 5)}Z`;
     return (
       <g>
-        <path d={`M${f1(s.x)},${f1(s.y + 4)} Q${f1(peak.x - 10)},${f1(peak.y + 4)} ${f1(peak.x)},${f1(peak.y)} Q${f1(peak.x + 14)},${f1(peak.y + h * 0.5)} ${f1(e.x)},${f1(e.y + 4)}Z`} fill={ctx.url('sec')} stroke={c.outline} strokeWidth={1.8} />
-        {!ctx.sil && [0.25, 0.5, 0.75].map((t) => {
-          const bx = s.x + (e.x - s.x) * t;
-          const by = s.y + (e.y - s.y) * t + 4;
-          return <line key={t} x1={bx} y1={by} x2={peak.x + (bx - peak.x) * 0.25} y2={peak.y + (by - peak.y) * 0.25} stroke={c.secLight} strokeWidth={1.1} opacity={0.75} />;
-        })}
+        <path d={d} fill={ctx.url('sec')} stroke={c.outline} strokeWidth={1.8} strokeLinejoin="round" />
+        {!ctx.sil &&
+          [0.3, 0.55, 0.8].map((t) => {
+            const bx = rear.x + (frontP.x - rear.x) * t;
+            const by = rear.y + (frontP.y - rear.y) * t + 4;
+            return <path key={t} d={`M${f1(bx)},${f1(by)} Q${f1(bx - 4)},${f1(by - h * 0.4)} ${f1(peak.x + (bx - peak.x) * 0.32)},${f1(peak.y + (by - peak.y) * 0.3)}`} stroke={c.secLight} strokeWidth={1.1} fill="none" opacity={0.7} />;
+          })}
       </g>
     );
   }
@@ -226,11 +263,21 @@ function BehindBack({ x: ctx }: { x: Ctx }) {
         {tl.slice(1, -1).map((p, i) => {
           const len = (11 + (i % 2) * 4) * g.height;
           const ang = p.a;
-          const tipX = p.x + Math.cos(ang) * len - 4;
-          const tipY = p.y + Math.sin(ang) * len;
-          const nx = Math.cos(ang + Math.PI / 2) * 4.5;
-          const ny = Math.sin(ang + Math.PI / 2) * 4.5;
-          return <path key={i} d={`M${f1(p.x - nx)},${f1(p.y - ny + 3)} L${f1(tipX)},${f1(tipY)} L${f1(p.x + nx)},${f1(p.y + ny + 3)}Z`} fill={c.secDark} stroke={c.outline} strokeWidth={1.4} strokeLinejoin="round" />;
+          // Tips sweep toward the tail.
+          const tipX = p.x + Math.cos(ang) * len - len * 0.5;
+          const tipY = p.y + Math.sin(ang) * len * 0.9;
+          const nx = Math.cos(ang + Math.PI / 2) * 4.8;
+          const ny = Math.sin(ang + Math.PI / 2) * 4.8;
+          return (
+            <path
+              key={i}
+              d={`M${f1(p.x - nx)},${f1(p.y - ny + 4)} Q${f1(p.x - len * 0.15)},${f1(p.y - len * 0.45)} ${f1(tipX)},${f1(tipY)} Q${f1(p.x + nx * 0.2)},${f1(p.y - len * 0.25)} ${f1(p.x + nx)},${f1(p.y + ny + 4)}Z`}
+              fill={c.secDark}
+              stroke={c.outline}
+              strokeWidth={1.4}
+              strokeLinejoin="round"
+            />
+          );
         })}
       </g>
     );
@@ -264,6 +311,7 @@ function Tail({ x: ctx }: { x: Ctx }) {
   const elTail = g.mutations.includes('element_tail');
   const type = g.tail === 'none' && elTail ? 'whip' : g.tail;
   if (type === 'none') return null;
+  if (g.body === 'jelly') return <Ribbons x={ctx} type={type} elTail={elTail} />;
   const deg = (a.tail.a * 180) / Math.PI;
   const tx = `translate(${f1(a.tail.x)} ${f1(a.tail.y)}) rotate(${f1(deg)})`;
   let body: ReactNode = null;
@@ -314,17 +362,53 @@ function Tail({ x: ctx }: { x: Ctx }) {
       break;
   }
   return (
-    <g className={ctx.animated ? 'cr-tail' : undefined} style={{ transformOrigin: `${f1(a.tail.x)}px ${f1(a.tail.y)}px` }}>
+    <g className={ctx.animated ? 'cr-tail' : undefined} style={{ transformOrigin: `${f1(a.tail.x)}px ${f1(a.tail.y)}px`, animationDelay: '-2.9s' }}>
       <g transform={tx}>
         {body}
         {elTail && !ctx.sil && (
           <g className={ctx.animated ? 'cr-pulse' : undefined} style={{ transformOrigin: `${tip.x}px ${tip.y}px` }}>
-            <circle cx={tip.x} cy={tip.y} r={9} fill={c.el} opacity={0.25} filter={ctx.lite ? undefined : ctx.url('glow')} />
+            <circle cx={tip.x} cy={tip.y} r={13} fill={ctx.url('haloEl')} />
             <path d={`M${tip.x - 5},${tip.y + 3} Q${tip.x},${tip.y - 12} ${tip.x + 6},${tip.y + 3} Q${tip.x},${tip.y + 7} ${tip.x - 5},${tip.y + 3}Z`} fill={c.el} stroke={c.el2} strokeWidth={1} />
             <circle cx={tip.x} cy={tip.y + 1} r={2.4} fill="#fff" opacity={0.85} />
           </g>
         )}
       </g>
+    </g>
+  );
+}
+
+/** Medusoid tails: luminous ribbons trailing beneath the bell instead of a stiff tail. */
+function Ribbons({ x: ctx, type, elTail }: { x: Ctx; type: Genome['tail']; elTail: boolean }) {
+  const { a, c, g } = ctx;
+  const by = (a.hips[0]?.y ?? a.torso.cy + a.torso.ry) - 4;
+  const cx = a.torso.cx;
+  const count = type === 'club' ? 1 : type === 'whip' ? 2 : 3;
+  const rx = a.torso.rx;
+  const xs = count === 1 ? [cx - rx * 0.55] : count === 2 ? [cx - rx * 0.7, cx - rx * 0.4] : [cx - rx * 0.8, cx - rx * 0.55, cx - rx * 0.3];
+  const L = 62 * g.height;
+  return (
+    <g>
+      {xs.map((x, i) => {
+        const len = L * (1 - Math.abs(i - (count - 1) / 2) * 0.18);
+        const d = `M${f1(x)},${f1(by)} C${f1(x - 10)},${f1(by + len * 0.3)} ${f1(x - 2)},${f1(by + len * 0.6)} ${f1(x - 30)},${f1(by + len * 0.92)}`;
+        const end = { x: x - 30, y: by + len * 0.92 };
+        return (
+          <g key={i} className={ctx.animated ? 'cr-ribbon' : undefined} style={{ transformOrigin: `${f1(x)}px ${f1(by)}px`, animationDelay: `${(-2.8 + i * 0.25).toFixed(2)}s` }}>
+            <path d={d} fill="none" stroke={c.sec} strokeOpacity={ctx.sil ? 1 : 0.55} strokeWidth={type === 'fan' ? 6 : 4.4} strokeLinecap="round" />
+            <path d={d} fill="none" stroke={c.sec} strokeOpacity={ctx.sil ? 1 : 0.7} strokeWidth={type === 'fan' ? 9 : 7} strokeLinecap="round" pathLength={100} strokeDasharray="40 100" />
+            {!ctx.sil && <path d={d} fill="none" stroke={c.accLight} strokeWidth={1.6} strokeLinecap="round" strokeDasharray={type === 'plume' ? '1.5 4' : undefined} className={ctx.animated ? 'cr-glowpulse' : undefined} />}
+            {!ctx.sil && <path d={d} fill="none" stroke={c.acc} strokeOpacity={0.25} strokeWidth={type === 'fan' ? 13 : 10} strokeLinecap="round" />}
+            {type === 'club' && <circle cx={end.x} cy={end.y} r={5} fill={c.secDark} stroke={c.outline} strokeWidth={1.4} />}
+            {elTail && i === Math.floor((count - 1) / 2) && !ctx.sil && (
+              <g className={ctx.animated ? 'cr-pulse' : undefined} style={{ transformOrigin: `${f1(end.x)}px ${f1(end.y)}px` }}>
+                <circle cx={end.x} cy={end.y} r={12} fill={ctx.url('haloEl')} />
+                <circle cx={end.x} cy={end.y} r={4} fill={c.el} stroke={c.el2} strokeWidth={1} />
+                <circle cx={end.x - 1} cy={end.y - 1} r={1.6} fill="#fff" />
+              </g>
+            )}
+          </g>
+        );
+      })}
     </g>
   );
 }
@@ -577,40 +661,62 @@ function Head({ x: ctx }: { x: Ctx }) {
     if (!ctx.sil) front.push(<path key="hr" d={`M${f1(hx2 + 1)},${f1(topY - 2)} q-4,-5 -9,-9 M${f1(hx2 - 3)},${f1(topY - 9)} q-3,-3 -7,-5`} stroke={c.outline} strokeWidth={0.9} opacity={0.5} fill="none" />);
   }
   if (g.head === 'crest') {
+    // Blades sweep back along the skull instead of standing upright.
     front.push(
       <g key="crest">
-        {[0, 1, 2].map((k) => (
-          <path key={k} d={`M${f1(topX + 8 - k * 8)},${f1(topY + 5 + k * 2)} L${f1(topX - 2 - k * 10)},${f1(topY - 15 + k * 3)} L${f1(topX - 4 - k * 8)},${f1(topY + 7 + k * 2)}Z`} fill={k === 1 ? c.acc : c.sec} stroke={c.outline} strokeWidth={1.4} strokeLinejoin="round" />
-        ))}
+        {[2, 1, 0].map((k) => {
+          const b1 = { x: topX + 8 - k * 7, y: topY + 5 + k * 2 };
+          const b2 = { x: topX - 3 - k * 7, y: topY + 7 + k * 2 };
+          const tip = { x: topX - 14 - k * 9, y: topY - 13 + k * 4 };
+          return (
+            <path
+              key={k}
+              d={`M${f1(b1.x)},${f1(b1.y)} Q${f1(topX - k * 7)},${f1(topY - 11 + k * 3)} ${f1(tip.x)},${f1(tip.y)} Q${f1(topX - 6 - k * 7)},${f1(topY + 1 + k * 2)} ${f1(b2.x)},${f1(b2.y)}Z`}
+              fill={k === 1 ? c.acc : c.sec}
+              stroke={c.outline}
+              strokeWidth={1.4}
+              strokeLinejoin="round"
+            />
+          );
+        })}
       </g>,
     );
   }
+  const pulse = ctx.animated ? 'cr-biolum' : undefined;
   if (g.head === 'antennae') {
+    const t1 = { x: topX - 15, y: topY - 21 };
+    const t2 = { x: topX + 2, y: topY - 25 };
     front.push(
-      <g key="ant" className={ctx.animated ? 'cr-antenna' : undefined} style={{ transformOrigin: `${f1(topX)}px ${f1(topY + 4)}px` }}>
-        <path d={`M${f1(topX)},${f1(topY + 4)} Q${f1(topX - 4)},${f1(topY - 14)} ${f1(topX - 14)},${f1(topY - 22)} M${f1(topX + 6)},${f1(topY + 4)} Q${f1(topX + 8)},${f1(topY - 14)} ${f1(topX + 4)},${f1(topY - 25)}`} stroke={c.outline} strokeWidth={2.2} fill="none" strokeLinecap="round" />
-        <circle cx={topX - 14} cy={topY - 22} r={3.4} fill={c.accLight} stroke={c.outline} strokeWidth={1} filter={glow} />
-        <circle cx={topX + 4} cy={topY - 25} r={3.4} fill={c.accLight} stroke={c.outline} strokeWidth={1} filter={glow} />
+      <g key="ant" className={ctx.animated ? 'cr-antenna' : undefined} style={{ transformOrigin: `${f1(topX)}px ${f1(topY + 4)}px`, animationDelay: '-2.95s' }}>
+        <path d={`M${f1(topX)},${f1(topY + 4)} Q${f1(topX - 4)},${f1(topY - 12)} ${f1(t1.x)},${f1(t1.y)} M${f1(topX + 6)},${f1(topY + 4)} Q${f1(topX + 7)},${f1(topY - 13)} ${f1(t2.x)},${f1(t2.y)}`} stroke={c.outline} strokeWidth={2.2} fill="none" strokeLinecap="round" />
+        {!ctx.sil && <circle className={pulse} cx={t1.x} cy={t1.y} r={9} fill={ctx.url('haloAcc')} />}
+        {!ctx.sil && <circle className={pulse} cx={t2.x} cy={t2.y} r={9} fill={ctx.url('haloAcc')} style={{ animationDelay: '-1.3s' }} />}
+        <circle cx={t1.x} cy={t1.y} r={3.3} fill={c.accLight} stroke={c.outline} strokeWidth={1} />
+        <circle cx={t2.x} cy={t2.y} r={3.3} fill={c.accLight} stroke={c.outline} strokeWidth={1} />
       </g>,
     );
   }
   if (g.mutations.includes('sensor_stalks')) {
+    const tip = { x: topX - 34, y: topY - 36 };
+    const d = `M${f1(topX - 4)},${f1(topY + 4)} C${f1(topX - 10)},${f1(topY - 20)} ${f1(topX - 30)},${f1(topY - 14)} ${f1(tip.x)},${f1(tip.y + 2)}`;
     front.push(
-      <g key="stalk" className={ctx.animated ? 'cr-antenna' : undefined} style={{ transformOrigin: `${f1(topX - 4)}px ${f1(topY + 4)}px`, animationDelay: '0.6s' }}>
-        <path d={`M${f1(topX - 4)},${f1(topY + 4)} C${f1(topX - 10)},${f1(topY - 20)} ${f1(topX - 30)},${f1(topY - 14)} ${f1(topX - 34)},${f1(topY - 34)}`} stroke={c.outline} strokeWidth={3} fill="none" strokeLinecap="round" />
-        <path d={`M${f1(topX - 4)},${f1(topY + 4)} C${f1(topX - 10)},${f1(topY - 20)} ${f1(topX - 30)},${f1(topY - 14)} ${f1(topX - 34)},${f1(topY - 34)}`} stroke={c.sec} strokeWidth={1.6} fill="none" strokeLinecap="round" />
-        <circle cx={topX - 34} cy={topY - 36} r={4.5} fill={ctx.sil ? c.body : c.el} filter={glow} />
-        {!ctx.sil && <circle cx={topX - 35} cy={topY - 37} r={1.5} fill="#fff" />}
+      <g key="stalk" className={ctx.animated ? 'cr-antenna' : undefined} style={{ transformOrigin: `${f1(topX - 4)}px ${f1(topY + 4)}px`, animationDelay: '-2.6s' }}>
+        <path d={d} stroke={c.outline} strokeWidth={3} fill="none" strokeLinecap="round" />
+        <path d={d} stroke={c.sec} strokeWidth={1.6} fill="none" strokeLinecap="round" />
+        {!ctx.sil && <circle className={pulse} cx={tip.x} cy={tip.y} r={12} fill={ctx.url('haloEl')} style={{ animationDelay: '-0.7s' }} />}
+        <circle cx={tip.x} cy={tip.y} r={4.5} fill={ctx.sil ? c.body : c.el} stroke={ctx.sil ? c.outline : c.el2} strokeWidth={0.8} />
+        {!ctx.sil && <circle cx={tip.x - 1} cy={tip.y - 1} r={1.5} fill="#fff" />}
       </g>,
     );
   }
   if (g.mutations.includes('crystal_crown')) {
     front.push(
-      <g key="crown" filter={glow}>
+      <g key="crown">
+        {!ctx.sil && <ellipse className={pulse} cx={topX} cy={topY - 6} rx={24} ry={16} fill={ctx.url('haloEl')} />}
         {[-16, -6, 4, 14].map((dx, i) => {
           const h = i === 1 || i === 2 ? 18 : 12;
           const bx = topX + dx * 0.8;
-          return <path key={i} d={`M${f1(bx - 4)},${f1(topY + 5)} L${f1(bx - 1)},${f1(topY - h)} L${f1(bx + 4)},${f1(topY + 5)}Z`} fill={ctx.sil ? c.body : ctx.url('crystal')} stroke={ctx.sil ? c.outline : '#ffffff'} strokeWidth={0.9} />;
+          return <path key={i} d={`M${f1(bx - 4)},${f1(topY + 5)} L${f1(bx - 2.5)},${f1(topY - h)} L${f1(bx + 4)},${f1(topY + 5)}Z`} fill={ctx.sil ? c.body : ctx.url('crystal')} stroke={ctx.sil ? c.outline : '#ffffff'} strokeWidth={0.9} strokeLinejoin="round" />;
         })}
       </g>,
     );
@@ -620,7 +726,8 @@ function Head({ x: ctx }: { x: Ctx }) {
   const base = integrated ? null : (
     <g>
       <path d={`M${f1(hx - r)},${f1(hy)} C${f1(hx - r)},${f1(hy - r * 1.1)} ${f1(hx + r * 0.9)},${f1(hy - r * 1.15)} ${f1(hx + r * 1.02)},${f1(hy - r * 0.05)} C${f1(hx + r * 1.1)},${f1(hy + r * 0.9)} ${f1(hx - r * 0.8)},${f1(hy + r * 1.05)} ${f1(hx - r)},${f1(hy)}Z`} fill={ctx.url('body')} stroke={c.outline} strokeWidth={2} />
-      {!ctx.sil && <ellipse cx={hx - r * 0.15} cy={hy - r * 0.55} rx={r * 0.45} ry={r * 0.18} fill="#fff" opacity={0.18} />}
+      {!ctx.sil && <path d={`M${f1(hx - r)},${f1(hy)} C${f1(hx - r)},${f1(hy - r * 1.1)} ${f1(hx + r * 0.9)},${f1(hy - r * 1.15)} ${f1(hx + r * 1.02)},${f1(hy - r * 0.05)} C${f1(hx + r * 1.1)},${f1(hy + r * 0.9)} ${f1(hx - r * 0.8)},${f1(hy + r * 1.05)} ${f1(hx - r)},${f1(hy)}Z`} fill="none" stroke={ctx.url('rimGrad')} strokeWidth={1.6} />}
+      {!ctx.sil && <ellipse cx={hx - r * 0.15} cy={hy - r * 0.55} rx={r * 0.45} ry={r * 0.18} fill="#fff" opacity={0.16} />}
       {!ctx.sil && <ellipse cx={hx + r * 0.3} cy={hy + r * 0.55} rx={r * 0.55} ry={r * 0.28} fill={c.secLight} opacity={0.45} />}
     </g>
   );
@@ -653,18 +760,84 @@ function Head({ x: ctx }: { x: Ctx }) {
   );
 }
 
-function Eye({ x: ctx, cx, cy, r, slit }: { x: Ctx; cx: number; cy: number; r: number; slit?: boolean }) {
+type EyeStyle = 'glossy' | 'luminous' | 'slit' | 'lidded' | 'sharp';
+
+/** Eye style follows personality (and Shadow organisms always have glowing slits). */
+function eyeStyle(ctx: Ctx): EyeStyle {
+  if (ctx.g.eyes === 'slit' || ctx.mood === 'aggressive' || ctx.g.element === 'shadow') return 'slit';
+  if (ctx.mood === 'curious') return 'luminous';
+  if (ctx.mood === 'defensive') return 'lidded';
+  if (ctx.mood === 'agile') return 'sharp';
+  return 'glossy';
+}
+
+function almond(cx: number, cy: number, r: number) {
+  return `M${f1(cx - r)},${f1(cy + r * 0.05)} Q${f1(cx - r * 0.1)},${f1(cy - r * 1.2)} ${f1(cx + r)},${f1(cy - r * 0.12)} Q${f1(cx + r * 0.1)},${f1(cy + r * 1.05)} ${f1(cx - r)},${f1(cy + r * 0.05)}Z`;
+}
+
+function Eye({ x: ctx, cx, cy, r, brow }: { x: Ctx; cx: number; cy: number; r: number; brow?: boolean }) {
   const { c } = ctx;
   if (ctx.sil) return <circle cx={cx} cy={cy} r={r * 0.5} fill="#2b3a66" opacity={0.6} />;
-  return (
-    <g>
-      <circle cx={cx} cy={cy} r={r} fill={c.eyeWhite} stroke={c.outline} strokeWidth={1.4} />
-      <circle cx={cx + r * 0.12} cy={cy + r * 0.04} r={r * 0.7} fill={ctx.url('iris')} />
-      {slit ? <ellipse cx={cx + r * 0.16} cy={cy + r * 0.04} rx={r * 0.14} ry={r * 0.55} fill={c.pupil} /> : <circle cx={cx + r * 0.18} cy={cy + r * 0.06} r={r * 0.36} fill={c.pupil} />}
-      <circle cx={cx - r * 0.18} cy={cy - r * 0.28} r={r * 0.24} fill="#fff" />
-      <circle cx={cx + r * 0.32} cy={cy + r * 0.3} r={r * 0.1} fill="#fff" opacity={0.8} />
-    </g>
+  const style = eyeStyle(ctx);
+  const specular = (
+    <>
+      <circle cx={cx - r * 0.3} cy={cy - r * 0.36} r={r * 0.24} fill="#fff" />
+      <circle cx={cx + r * 0.3} cy={cy + r * 0.26} r={r * 0.1} fill="#fff" opacity={0.85} />
+    </>
   );
+  switch (style) {
+    case 'slit':
+      // Bioluminescent dragon eye: glowing iris, dark vertical pupil.
+      return (
+        <g>
+          <ellipse cx={cx} cy={cy} rx={r * 1.5} ry={r * 1.2} fill={ctx.url('haloAcc')} opacity={0.45} />
+          <path d={almond(cx, cy, r * 1.12)} fill={ctx.url('eyeSlit')} stroke={c.outline} strokeWidth={1.3} />
+          <ellipse cx={cx + r * 0.08} cy={cy - r * 0.02} rx={r * 0.15} ry={r * 0.66} fill={c.pupil} />
+          <circle cx={cx - r * 0.38} cy={cy - r * 0.32} r={r * 0.17} fill="#fff" opacity={0.95} />
+          {brow && <path d={`M${f1(cx - r * 1.1)},${f1(cy - r * 1.16)} L${f1(cx + r * 0.95)},${f1(cy - r * 0.62)}`} stroke={c.outline} strokeWidth={Math.max(1.6, r * 0.34)} strokeLinecap="round" />}
+        </g>
+      );
+    case 'luminous':
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r={r * 1.75} fill={ctx.url('haloAcc')} opacity={0.55} />
+          <ellipse cx={cx} cy={cy} rx={r * 1.02} ry={r * 1.08} fill={ctx.url('eyeLum')} stroke={c.outline} strokeWidth={1.3} />
+          <circle cx={cx + r * 0.1} cy={cy + r * 0.08} r={r * 0.2} fill={c.pupil} />
+          {specular}
+        </g>
+      );
+    case 'sharp':
+      return (
+        <g transform={`rotate(-12 ${f1(cx)} ${f1(cy)})`}>
+          <path d={almond(cx, cy, r * 1.02)} fill={ctx.url('eyeGloss')} stroke={c.outline} strokeWidth={1.3} />
+          <circle cx={cx + r * 0.1} cy={cy + r * 0.05} r={r * 0.46} fill="none" stroke={c.accLight} strokeWidth={r * 0.08} opacity={0.55} />
+          {specular}
+        </g>
+      );
+    case 'lidded': {
+      const y0 = cy - r * 0.32;
+      const w = r * 0.9 * Math.sqrt(1 - 0.32 * 0.32);
+      return (
+        <g>
+          <ellipse cx={cx} cy={cy} rx={r * 0.9} ry={r} fill={ctx.url('eyeGloss')} stroke={c.outline} strokeWidth={1.3} />
+          <circle cx={cx + r * 0.08} cy={cy + r * 0.16} r={r * 0.5} fill="none" stroke={c.accLight} strokeWidth={r * 0.08} opacity={0.55} />
+          <circle cx={cx + r * 0.3} cy={cy + r * 0.32} r={r * 0.1} fill="#fff" opacity={0.85} />
+          <circle cx={cx - r * 0.32} cy={cy + r * 0.05} r={r * 0.15} fill="#fff" />
+          <path d={`M${f1(cx - w)},${f1(y0)} A${f1(r * 0.9)} ${f1(r)} 0 0 1 ${f1(cx + w)},${f1(y0)} Z`} fill={c.bodyLight} stroke={c.outline} strokeWidth={1.3} strokeLinejoin="round" />
+          <path d={`M${f1(cx - w)},${f1(y0)} L${f1(cx + w)},${f1(y0)}`} stroke={c.outline} strokeWidth={1.9} strokeLinecap="round" />
+        </g>
+      );
+    }
+    case 'glossy':
+    default:
+      return (
+        <g>
+          <ellipse cx={cx} cy={cy} rx={r * 0.92} ry={r} fill={ctx.url('eyeGloss')} stroke={c.outline} strokeWidth={1.3} />
+          <circle cx={cx + r * 0.08} cy={cy + r * 0.1} r={r * 0.55} fill="none" stroke={c.accLight} strokeWidth={r * 0.08} opacity={0.55} />
+          {specular}
+        </g>
+      );
+  }
 }
 
 function Eyes({ x: ctx }: { x: Ctx }) {
@@ -687,7 +860,7 @@ function Eyes({ x: ctx }: { x: Ctx }) {
   } else {
     switch (g.eyes) {
       case 'single':
-        eyes = <Eye x={ctx} cx={ex} cy={ey} r={er} />;
+        eyes = <Eye x={ctx} cx={ex} cy={ey} r={er} brow={ctx.mood === 'aggressive'} />;
         break;
       case 'triple':
         eyes = (
@@ -716,8 +889,8 @@ function Eyes({ x: ctx }: { x: Ctx }) {
       case 'slit':
         eyes = (
           <>
-            <Eye x={ctx} cx={ex - r * 0.4} cy={ey - r * 0.03} r={er * 0.82} slit />
-            <Eye x={ctx} cx={ex + r * 0.18} cy={ey} r={er} slit />
+            <Eye x={ctx} cx={ex - r * 0.4} cy={ey - r * 0.03} r={er * 0.82} brow={ctx.mood === 'aggressive'} />
+            <Eye x={ctx} cx={ex + r * 0.18} cy={ey} r={er} brow={ctx.mood === 'aggressive'} />
           </>
         );
         break;
@@ -725,8 +898,8 @@ function Eyes({ x: ctx }: { x: Ctx }) {
       default:
         eyes = (
           <>
-            <Eye x={ctx} cx={ex - r * 0.4} cy={ey - r * 0.03} r={er * 0.84} />
-            <Eye x={ctx} cx={ex + r * 0.2} cy={ey} r={er} />
+            <Eye x={ctx} cx={ex - r * 0.4} cy={ey - r * 0.03} r={er * 0.84} brow={ctx.mood === 'aggressive'} />
+            <Eye x={ctx} cx={ex + r * 0.2} cy={ey} r={er} brow={ctx.mood === 'aggressive'} />
           </>
         );
     }
@@ -739,7 +912,8 @@ function Eyes({ x: ctx }: { x: Ctx }) {
       {g.mutations.includes('third_eye') && (
         <g className={ctx.animated ? 'cr-blink' : undefined} style={{ transformOrigin: `${f1(ex - r * 0.05)}px ${f1(ey - r * 0.68)}px`, animationDelay: `${(g.seed % 3000) / 1000 + 1}s` }}>
           {ctx.sil ? null : (
-            <g filter={glow}>
+            <g>
+              <ellipse cx={ex - r * 0.05} cy={ey - r * 0.68} rx={r * 0.38} ry={r * 0.5} fill={ctx.url('haloEl')} />
               <ellipse cx={ex - r * 0.05} cy={ey - r * 0.68} rx={r * 0.16} ry={r * 0.3} fill={c.el2} stroke={c.outline} strokeWidth={1.2} />
               <ellipse cx={ex - r * 0.05} cy={ey - r * 0.68} rx={r * 0.06} ry={r * 0.22} fill={c.pupil} />
             </g>
@@ -829,12 +1003,72 @@ function ElementFx({ x: ctx }: { x: Ctx }) {
   return <g filter={ctx.url('glowSoft')}>{parts}</g>;
 }
 
+// ---------- Framing ----------
+interface Bounds {
+  top: number;
+  left: number;
+  right: number;
+}
+
+/** Approximate local-space bounds of the organism including tall/wide appendages. */
+function contentBounds(g: Genome, a: Anatomy, tuck: boolean): Bounds {
+  const r = a.head.r;
+  const headTop = a.head.integrated ? Math.min(a.head.y - r * 0.9, a.torso.cy - a.torso.ry * 0.95) : a.head.y - r * 0.92;
+  const headExtra = Math.max(
+    g.head === 'horns' ? 26 : g.head === 'antennae' ? 30 : g.head === 'crest' ? 16 : g.head === 'frill' ? r * 0.9 : 4,
+    g.mutations.includes('sensor_stalks') ? 44 : 0,
+    g.mutations.includes('crystal_crown') ? 22 : 0,
+  );
+  let top = Math.min(a.torso.cy - a.torso.ry, headTop - headExtra);
+  let left = Math.min(a.tail.x - (g.tail === 'none' ? 6 : 52), a.torso.cx - a.torso.rx - 4);
+  if (g.back === 'membrane_wings' || g.back === 'insect_wings') {
+    const L = (g.body === 'avian' ? 52 : 42) * (g.mutations.includes('great_wings') ? 1.45 : 1) * (tuck ? 0.9 : 1);
+    top = Math.min(top, a.back.y - L * 1.02);
+    left = Math.min(left, a.back.x - L * 1.1);
+  }
+  if (g.back === 'dorsal_fin') top = Math.min(top, a.topLine[Math.floor(a.topLine.length / 2)].y - 24);
+  if (g.back === 'spines' || g.mutations.includes('frost_spikes')) top = Math.min(top, Math.min(...a.topLine.map((p) => p.y)) - 18);
+  const right = a.head.x + r + (g.head === 'beak' || g.head === 'snout' ? 18 : 10);
+  return { top, left, right };
+}
+
+/** Largest scale (<= wanted) that keeps the bounds inside the 200x200 frame. */
+function fitScale(b: Bounds, dx: number, wanted: number): number {
+  let s = wanted;
+  if (b.top < GROUND) s = Math.min(s, (GROUND - 4) / (GROUND - b.top));
+  if (b.left < 100) s = Math.min(s, (dx + 97) / (100 - b.left));
+  if (b.right > 100) s = Math.min(s, (97 - dx) / (b.right - 100));
+  return Math.max(0.45, s);
+}
+
+/** Crop empty space around the organism (cards, grids). */
+function tightViewBox(b: Bounds, a: Anatomy, scale: number): string {
+  const bottom = GROUND + 9;
+  const tx = (x: number) => a.dx + 100 + (x - 100) * scale;
+  const ty = (y: number) => GROUND + (y - GROUND) * scale;
+  const L = tx(b.left) - 8;
+  const R = tx(b.right) + 8;
+  const T = ty(b.top) - 8;
+  const B = ty(bottom);
+  const side = Math.min(200, Math.max(118, R - L, B - T));
+  const cx = (L + R) / 2;
+  const extra = side - (B - T);
+  const y0 = T - extra * 0.62;
+  return `${f1(cx - side / 2)} ${f1(y0)} ${f1(side)} ${f1(side)}`;
+}
+
 // ---------- Main ----------
-function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, lite = false, silhouette = false, personality, shadow = true, className, style, title }: CreatureSVGProps) {
+function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, lite = false, silhouette = false, personality, framing = 'full', shadow = true, className, style, title }: CreatureSVGProps) {
   const rawId = useId();
-  const uidp = useMemo(() => 'cr' + rawId.replace(/[^a-zA-Z0-9]/g, ''), [rawId]);
+  // Every <defs> id is scoped to this SVG instance, so cards never share or lose references.
+  const uidp = useMemo(() => 'cr' + rawId.replace(/[^a-zA-Z0-9]/g, '') + (g.seed >>> 0).toString(36), [rawId, g.seed]);
   const a = useMemo(() => buildAnatomy(g), [g]);
   const c = useMemo(() => makePalette(g, silhouette), [g, silhouette]);
+  const hasWings = g.back === 'membrane_wings' || g.back === 'insect_wings';
+  const tuck = hasWings && (g.body === 'orb' || g.body === 'jelly');
+  // Translucent (glassy) bodies keep per-shape outlines: a solid under-silhouette would bleed through.
+  const joined = g.texture !== 'glassy';
+  const mood = personality ?? g.personality;
   const ctx: Ctx = {
     g,
     a,
@@ -845,13 +1079,18 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
     lite,
     sil: silhouette,
     animated,
+    mood,
+    joined,
+    tuck,
   };
-  const scale = g.size * a.fit * (1 + (stage - 1) * 0.05);
+  const bounds = useMemo(() => contentBounds(g, a, tuck), [g, a, tuck]);
+  const scale = fitScale(bounds, a.dx, g.size * a.fit * (1 + (stage - 1) * 0.05));
   const root = `translate(${f1(a.dx)} 0) translate(100 ${GROUND}) scale(${scale.toFixed(3)}) translate(-100 -${GROUND})`;
-  const idle = personality ?? g.personality;
-  const hasWings = g.back === 'membrane_wings' || g.back === 'insect_wings';
+  const viewBox = framing === 'tight' ? tightViewBox(bounds, a, scale) : '0 0 200 200';
   const el = ELEMENT_INFO[g.element];
   const auraStrength = silhouette ? 0 : g.anomaly ? 0.55 : stage === 3 ? 0.45 : stage === 2 ? 0.28 : 0;
+  // Near limbs tuck under the belly (the body hides the hip joint), except bug legs and side fins.
+  const underBody = (g.limbs === 'stout' || g.limbs === 'spindly' || g.limbs === 'tentacles') && !(g.body === 'arthropod' && g.limbs === 'spindly');
   const far = a.hips.filter((h) => h.far);
   const near = a.hips.filter((h) => !h.far);
   const extraHips: Hip[] = g.mutations.includes('extra_limbs')
@@ -860,12 +1099,17 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
         { x: a.torso.cx - a.torso.rx * 0.15, y: a.torso.cy + a.torso.ry * 0.7, far: false, splay: 0 },
       ]
     : [];
-  const limbType = g.limbs;
-  const extraCtx: Ctx = limbType === 'none' ? { ...ctx, g: { ...g, limbs: 'spindly' } } : ctx;
+  const extraCtx: Ctx = g.limbs === 'none' ? { ...ctx, g: { ...g, limbs: 'spindly' } } : ctx;
+  const extraUnder = extraCtx.g.limbs !== 'fins' && !(g.body === 'arthropod' && extraCtx.g.limbs === 'spindly');
+  const breatheCls = animated ? 'cr-breathe' : undefined;
+  const breatheStyle: CSSProperties = { transformOrigin: `${f1(a.torso.cx)}px ${f1(a.torso.cy + a.torso.ry)}px` };
+  const segmented = joined && (g.body === 'serpent' || g.body === 'arthropod');
+  const nearLimbs = near.map((h, i) => <Limb key={`n${i}`} x={ctx} hip={h} i={i + 2} />);
+  const extraNear = extraHips.filter((h) => !h.far).map((h, i) => <Limb key={`en${i}`} x={extraCtx} hip={h} i={i + 7} scale={0.85} />);
 
   return (
     <svg
-      viewBox="0 0 200 200"
+      viewBox={viewBox}
       width={size}
       height={size}
       className={`cr-root ${animated ? 'cr-animated' : ''} ${className ?? ''}`}
@@ -874,9 +1118,9 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
       aria-label={title ?? 'Procedurally generated creature'}
     >
       <defs>
-        <radialGradient id={ctx.id('body')} cx="35%" cy="30%" r="80%">
+        <radialGradient id={ctx.id('body')} cx="35%" cy="28%" r="80%">
           <stop offset="0%" stopColor={c.bodyLight} />
-          <stop offset="55%" stopColor={c.body} />
+          <stop offset="52%" stopColor={c.body} />
           <stop offset="100%" stopColor={c.bodyDark} />
         </radialGradient>
         <linearGradient id={ctx.id('sec')} x1="0" y1="0" x2="0" y2="1">
@@ -891,9 +1135,43 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
           <stop offset="0%" stopColor={c.sec} stopOpacity={0} />
           <stop offset="100%" stopColor={c.sec} stopOpacity={0.7} />
         </linearGradient>
-        <radialGradient id={ctx.id('iris')} cx="40%" cy="35%" r="70%">
+        <radialGradient id={ctx.id('eyeGloss')} cx="54%" cy="66%" r="72%">
           <stop offset="0%" stopColor={c.accLight} />
-          <stop offset="100%" stopColor={c.iris} />
+          <stop offset="34%" stopColor={c.iris} />
+          <stop offset="72%" stopColor={c.pupil} />
+          <stop offset="100%" stopColor={c.pupil} />
+        </radialGradient>
+        <radialGradient id={ctx.id('eyeSlit')} cx="52%" cy="52%" r="62%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="22%" stopColor={c.accLight} />
+          <stop offset="62%" stopColor={c.iris} />
+          <stop offset="100%" stopColor={c.pupil} />
+        </radialGradient>
+        <radialGradient id={ctx.id('eyeLum')} cx="46%" cy="46%" r="62%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="20%" stopColor={c.accLight} />
+          <stop offset="58%" stopColor={c.iris} />
+          <stop offset="100%" stopColor={c.pupil} />
+        </radialGradient>
+        <radialGradient id={ctx.id('haloAcc')} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={c.accLight} stopOpacity={0.85} />
+          <stop offset="40%" stopColor={c.acc} stopOpacity={0.32} />
+          <stop offset="100%" stopColor={c.acc} stopOpacity={0} />
+        </radialGradient>
+        <radialGradient id={ctx.id('haloEl')} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={c.el2} stopOpacity={0.9} />
+          <stop offset="38%" stopColor={c.el} stopOpacity={0.35} />
+          <stop offset="100%" stopColor={c.el} stopOpacity={0} />
+        </radialGradient>
+        <linearGradient id={ctx.id('rimGrad')} x1="0.95" y1="0" x2="0.2" y2="0.85">
+          <stop offset="0%" stopColor={c.rim} stopOpacity={0.95} />
+          <stop offset="38%" stopColor={c.rim} stopOpacity={0.35} />
+          <stop offset="62%" stopColor={c.rim} stopOpacity={0} />
+        </linearGradient>
+        <radialGradient id={ctx.id('shadowGrad')} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={silhouette ? '#000' : el.dark} stopOpacity={0.85} />
+          <stop offset="65%" stopColor={silhouette ? '#000' : el.dark} stopOpacity={0.45} />
+          <stop offset="100%" stopColor={silhouette ? '#000' : el.dark} stopOpacity={0} />
         </radialGradient>
         <linearGradient id={ctx.id('crystal')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" />
@@ -921,7 +1199,7 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
           ))}
         </clipPath>
         {!lite && (
-          <filter id={ctx.id('glow')} x="-50%" y="-50%" width="200%" height="200%">
+          <filter id={ctx.id('glow')} x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation="2" result="b" />
             <feMerge>
               <feMergeNode in="b" />
@@ -930,7 +1208,7 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
           </filter>
         )}
         {!lite && (
-          <filter id={ctx.id('glowSoft')} x="-50%" y="-50%" width="200%" height="200%">
+          <filter id={ctx.id('glowSoft')} x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation="1.2" result="b" />
             <feMerge>
               <feMergeNode in="b" />
@@ -952,17 +1230,27 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
           className={animated && a.floats ? 'cr-shadow-float' : undefined}
           cx={100}
           cy={GROUND + 4}
-          rx={a.floats ? 34 : 52 * g.size * a.fit}
-          ry={a.floats ? 5 : 7}
-          fill={silhouette ? '#000' : el.dark}
-          opacity={silhouette ? 0.35 : 0.55}
+          rx={a.floats ? 38 : 58 * g.size * a.fit}
+          ry={a.floats ? 6 : 8}
+          fill={ctx.url('shadowGrad')}
+          opacity={silhouette ? 0.5 : 0.85}
           style={{ transformOrigin: `100px ${GROUND + 4}px` }}
         />
       )}
 
       <g transform={root}>
-        <g className={animated ? `cr-idle cr-idle-${idle} ${a.floats ? 'cr-float' : ''} ${hasWings && g.body === 'avian' ? 'cr-hover' : ''}` : undefined} style={{ transformOrigin: `100px ${GROUND}px` }}>
+        <g className={animated ? `cr-idle cr-idle-${mood} ${a.floats ? 'cr-float' : ''}` : undefined} style={{ transformOrigin: `100px ${GROUND}px` }}>
           <Wisps x={ctx} />
+          {/* 1. One joined silhouette outline under the whole torso (removes seams between neck, segments and body). */}
+          {joined && (
+            <g className={breatheCls} style={breatheStyle}>
+              {a.neck && <path d={a.neck} fill={c.outline} stroke={c.outline} strokeWidth={4.6} strokeLinejoin="round" />}
+              {a.shapes.map((s, i) => (
+                <ShapeEl key={i} s={s} fill={c.outline} stroke={c.outline} strokeWidth={4.6} strokeLinejoin="round" />
+              ))}
+            </g>
+          )}
+          {/* 2. Parts that grow out from behind the body. */}
           <Tail x={ctx} />
           {far.map((h, i) => (
             <Limb key={`f${i}`} x={ctx} hip={h} i={i} />
@@ -971,34 +1259,43 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
             <Limb key={`ef${i}`} x={extraCtx} hip={h} i={i + 5} scale={0.85} />
           ))}
           {hasWings && <Wing x={ctx} far />}
+          {tuck && <Wing x={ctx} far={false} />}
           <BehindBack x={ctx} />
-          <g className={animated ? 'cr-breathe' : undefined} style={{ transformOrigin: `${f1(a.torso.cx)}px ${f1(a.torso.cy + a.torso.ry)}px` }}>
-            {a.neck && <path d={a.neck} fill={ctx.url('body')} stroke={c.outline} strokeWidth={2} strokeLinejoin="round" />}
+          {underBody && nearLimbs}
+          {extraUnder && extraNear}
+          {/* 3. Body fills, shading and surface detail. */}
+          <g className={breatheCls} style={breatheStyle}>
+            {a.neck && <path d={a.neck} fill={ctx.url('body')} stroke={joined ? 'none' : c.outline} strokeWidth={2} strokeLinejoin="round" />}
             {a.shapes.map((s, i) => (
-              <ShapeEl key={i} s={s} fill={ctx.url('body')} fillOpacity={g.texture === 'glassy' && !silhouette ? 0.82 : 1} stroke={c.outline} strokeWidth={2.2} strokeLinejoin="round" />
+              <g key={i}>
+                <ShapeEl s={s} fill={ctx.url('body')} fillOpacity={g.texture === 'glassy' && !silhouette ? 0.82 : 1} stroke={joined ? 'none' : c.outline} strokeWidth={2.2} strokeLinejoin="round" />
+                {/* Soft crease keeps overlapping segments readable once inner outlines are gone. */}
+                {segmented && i > 0 && !silhouette && <ShapeEl s={s} fill="none" stroke={c.crease} strokeWidth={1.4} />}
+              </g>
             ))}
             {!silhouette && (
               <g clipPath={ctx.url('clip')}>
-                <ellipse cx={a.torso.cx + a.torso.rx * 0.1} cy={a.torso.cy + a.torso.ry * 0.62} rx={a.torso.rx * 0.75} ry={a.torso.ry * 0.5} fill={c.secLight} opacity={g.body === 'jelly' ? 0.25 : 0.5} />
+                <ellipse cx={a.torso.cx + a.torso.rx * 0.1} cy={a.torso.cy + a.torso.ry * 0.62} rx={a.torso.rx * 0.75} ry={a.torso.ry * 0.5} fill={c.secLight} opacity={g.body === 'jelly' ? 0.25 : 0.45} />
               </g>
             )}
             <Pattern x={ctx} />
             <Texture x={ctx} />
             {!silhouette && (
               <g clipPath={ctx.url('clip')}>
-                <ellipse cx={a.torso.cx - a.torso.rx * 0.25} cy={a.torso.cy - a.torso.ry * 0.55} rx={a.torso.rx * 0.45} ry={a.torso.ry * 0.2} fill="#fff" opacity={g.texture === 'glassy' ? 0.4 : 0.18} />
+                <ellipse cx={a.torso.cx - a.torso.rx * 0.25} cy={a.torso.cy - a.torso.ry * 0.55} rx={a.torso.rx * 0.45} ry={a.torso.ry * 0.2} fill="#fff" opacity={g.texture === 'glassy' ? 0.4 : 0.14} />
+                {/* Rim light: ambient lab light catching the top-right edge. */}
+                {a.shapes.map((s, i) => (
+                  <ShapeEl key={`rim${i}`} s={s} fill="none" stroke={ctx.url('rimGrad')} strokeWidth={3.4} />
+                ))}
               </g>
             )}
             {g.back === 'shell' && <Shell x={ctx} />}
             <BodyMutations x={ctx} />
           </g>
-          {near.map((h, i) => (
-            <Limb key={`n${i}`} x={ctx} hip={h} i={i + 2} />
-          ))}
-          {extraHips.filter((h) => !h.far).map((h, i) => (
-            <Limb key={`en${i}`} x={extraCtx} hip={h} i={i + 7} scale={0.85} />
-          ))}
-          {hasWings && <Wing x={ctx} far={false} />}
+          {/* 4. Parts in front of the body. */}
+          {!underBody && nearLimbs}
+          {!extraUnder && extraNear}
+          {hasWings && !tuck && <Wing x={ctx} far={false} />}
           <Head x={ctx} />
         </g>
       </g>

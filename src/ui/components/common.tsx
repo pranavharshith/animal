@@ -85,7 +85,15 @@ export function CreatureTile({
     >
       {badge && <span className="tile-badge">{badge}</span>}
       <div className="tile-art">
-        <CreatureSVG genome={creature.genome} stage={creature.stage} size={size} lite={lite} animated={selected} personality={ranked(creature.tendencies)[0][0]} />
+        <span className="tile-pad" aria-hidden />
+        {(rarity === 'exotic' || rarity === 'anomaly') && (
+          <span className="tile-motes" aria-hidden>
+            <i />
+            <i />
+            <i />
+          </span>
+        )}
+        <CreatureSVG genome={creature.genome} stage={creature.stage} size={size} lite={lite} animated={selected} framing="tight" shadow={false} personality={ranked(creature.tendencies)[0][0]} />
       </div>
       <div className="tile-meta">
         <span className="tile-name">{creature.name}</span>

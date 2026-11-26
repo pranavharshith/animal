@@ -58,7 +58,7 @@ export function smoothClosed(pts: Pt[]): string {
 }
 
 /** Organic ellipse: slightly irregular radii, optional rotation and front/back bias. */
-export function blob(rng: Rng, cx: number, cy: number, rx: number, ry: number, opts: { wobble?: number; rot?: number; frontBulge?: number; bottomFlat?: number } = {}): string {
+export function blob(rng: Rng, cx: number, cy: number, rx: number, ry: number, opts: { wobble?: number; rot?: number; frontBulge?: number; backTaper?: number; bottomFlat?: number } = {}): string {
   const n = 10;
   const wob = opts.wobble ?? 0.06;
   const rot = opts.rot ?? 0;
@@ -69,6 +69,8 @@ export function blob(rng: Rng, cx: number, cy: number, rx: number, ry: number, o
     const cos = Math.cos(a);
     const sin = Math.sin(a);
     if (opts.frontBulge) r *= 1 + opts.frontBulge * Math.max(0, cos);
+    // Narrower rump/waist toward the rear gives the silhouette some attitude.
+    if (opts.backTaper) r *= 1 - opts.backTaper * Math.max(0, -cos) * (0.6 + 0.4 * Math.abs(sin));
     let y = sin * ry * r;
     if (opts.bottomFlat && sin > 0) y *= 1 - opts.bottomFlat;
     const x = cos * rx * r;
@@ -122,7 +124,7 @@ export function buildAnatomy(g: Genome): Anatomy {
       const cx = 100;
       a = {
         torso: { cx, cy, rx, ry },
-        shapes: [{ kind: 'path', d: blob(rng, cx, cy, rx, ry, { wobble: 0.05, bottomFlat: legLen ? 0 : 0.1 }) }],
+        shapes: [{ kind: 'path', d: blob(rng, cx, cy, rx, ry, { wobble: 0.05, frontBulge: 0.04, backTaper: 0.05, bottomFlat: legLen ? 0 : 0.1 }) }],
         head: { x: cx + rx * 0.42, y: cy - ry * 0.18, r: ry * 0.62 * hs, integrated: true },
         neck: null,
         back: { x: cx - rx * 0.2, y: cy - ry * 0.72 },
@@ -146,7 +148,7 @@ export function buildAnatomy(g: Genome): Anatomy {
       const hy = cy - ry * 1.15;
       a = {
         torso: { cx, cy, rx, ry },
-        shapes: [{ kind: 'path', d: blob(rng, cx, cy, rx, ry, { wobble: 0.05, frontBulge: 0.08 }) }],
+        shapes: [{ kind: 'path', d: blob(rng, cx, cy, rx, ry, { wobble: 0.05, frontBulge: 0.15, backTaper: 0.12 }) }],
         head: { x: hx, y: hy, r: 18 * hs, integrated: false },
         neck: `M${cx + rx * 0.45},${cy - ry * 0.5} Q${cx + rx * 0.85},${cy - ry * 0.95} ${hx - 6},${hy + 4} L${hx + 2},${hy + 14} Q${cx + rx * 0.95},${cy + ry * 0.1} ${cx + rx * 0.7},${cy + ry * 0.45}Z`,
         back: { x: cx - rx * 0.05, y: cy - ry * 0.85 },
@@ -171,7 +173,7 @@ export function buildAnatomy(g: Genome): Anatomy {
       const hy = cy - ry * 1.02;
       a = {
         torso: { cx, cy, rx, ry },
-        shapes: [{ kind: 'path', d: blob(rng, cx, cy, rx, ry, { wobble: 0.05, rot }) }],
+        shapes: [{ kind: 'path', d: blob(rng, cx, cy, rx, ry, { wobble: 0.05, rot, frontBulge: 0.07, backTaper: 0.06 }) }],
         head: { x: hx, y: hy, r: 17 * hs, integrated: false },
         neck: `M${cx + rx * 0.05},${cy - ry * 0.6} Q${hx - 8},${hy + 8} ${hx - 4},${hy} L${hx + 8},${hy + 6} Q${cx + rx * 0.85},${cy - ry * 0.4} ${cx + rx * 0.7},${cy - ry * 0.1}Z`,
         back: { x: cx - rx * 0.15, y: cy - ry * 0.45 },
@@ -197,7 +199,7 @@ export function buildAnatomy(g: Genome): Anatomy {
       a = {
         torso: { cx: abCx + 8, cy: cy - 1, rx: abRx + 12, ry: abRy },
         shapes: [
-          { kind: 'path', d: blob(rng, abCx, cy, abRx, abRy, { wobble: 0.07, rot: 0.08 }) },
+          { kind: 'path', d: blob(rng, abCx, cy, abRx, abRy, { wobble: 0.07, rot: 0.08, backTaper: 0.16 }) },
           { kind: 'path', d: blob(rng, cx + 6, cy - 3, thRx, thRy, { wobble: 0.05 }) },
         ],
         head: { x: cx + 6 + thRx + 9 * hs, y: cy - 8, r: 14 * hs, integrated: false },

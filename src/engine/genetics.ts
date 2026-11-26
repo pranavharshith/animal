@@ -1,5 +1,6 @@
 // Genome generation, derived stats, rarity and species identity.
 import { baseTendencies, dominant } from './behaviour';
+import { harmonizeGenome } from './color';
 import { ELEMENT_PALETTES, GENE_RARITY, MUTATION_INFO, PALETTES } from './data';
 import { generateName } from './naming';
 import { chance, clamp, hashSeed, int, mulberry32, pick, range, uid, weighted, type Rng } from './rng';
@@ -87,7 +88,7 @@ export function genomeFromSeed(seed: number, opts: WildOptions = {}): Genome {
   if (element === 'tide' && body !== 'jelly' && rng() < 0.3) limbs = 'fins';
   if (element === 'volt' && body !== 'jelly' && rng() < 0.25) back = 'insect_wings';
 
-  return {
+  return harmonizeGenome({
     seed: seed >>> 0,
     body,
     head: weighted(rng, HEADS, (h) => rareWeight(`head:${h}`)),
@@ -112,7 +113,7 @@ export function genomeFromSeed(seed: number, opts: WildOptions = {}): Genome {
     potential: int(rng, 1, 4) + (chance(rng, 0.08 * rareBias) ? 1 : 0),
     mutations: [],
     anomaly: false,
-  };
+  });
 }
 
 export function emptyExposure(): Exposure {
@@ -275,7 +276,7 @@ export function starterGenomes(): [Genome, Genome] {
   b.eyes = 'pair';
   b.mouth = 'tiny';
   b.personality = 'curious';
-  return [a, b];
+  return [harmonizeGenome(a), harmonizeGenome(b)];
 }
 
 /** Seed for "today's" daily anomaly. */

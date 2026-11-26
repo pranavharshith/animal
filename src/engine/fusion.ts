@@ -1,5 +1,6 @@
 // Fusion engine: deterministic recombination of two genomes into a new organism.
 import { BACK_LABEL, BODY_LABEL, ELEMENT_INFO, EYE_LABEL, HEAD_LABEL, LIMB_LABEL, MOUTH_LABEL, MUTATION_INFO, OPPOSED, PATTERN_LABEL, TAIL_LABEL, TEXTURE_LABEL } from './data';
+import { harmonizeGenome } from './color';
 import { BODY_PLANS, createCreature } from './genetics';
 import { fusionName } from './naming';
 import { chance, clamp, hashSeed, int, lerp, lerpHue, mulberry32, pick, range, weighted, type Rng } from './rng';
@@ -166,6 +167,9 @@ export function fuse(a: Creature, b: Creature, seed: number): FusionReport {
   }
   // At least one appendage for an interesting silhouette.
   if (genome.back === 'none' && genome.tail === 'none' && genome.limbs === 'none') genome.back = pick(rng, ['spines', 'membrane_wings', 'dorsal_fin'] as const);
+
+  // 60-30-10 colour rule (anomalies keep their clashing palette).
+  genome = harmonizeGenome(genome);
 
   const name = fusionName(seed, a.name, b.name, element, body);
   const child = createCreature(genome, 'fusion', {

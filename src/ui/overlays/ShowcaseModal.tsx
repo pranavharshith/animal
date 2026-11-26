@@ -75,7 +75,7 @@ function SpecimenCardPreview({ creature, reduced = false }: { creature: Creature
             <i className="show-tick bl" />
             <i className="show-tick br" />
             <div className="show-art">
-              <CreatureSVG genome={g} stage={creature.stage} size="100%" animated={!reduced} personality={ranked(creature.tendencies)[0][0]} />
+              <CreatureSVG genome={g} stage={creature.stage} size="100%" animated={!reduced} framing="tight" personality={ranked(creature.tendencies)[0][0]} />
             </div>
           </div>
           <h4 className="show-name">{creature.name}</h4>

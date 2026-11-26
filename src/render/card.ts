@@ -5,6 +5,7 @@ import { computeStats, creatureRarity } from '../engine/genetics';
 import { encodeGenome } from '../engine/genomeCode';
 import { hashSeed, mulberry32 } from '../engine/rng';
 import type { Creature, Rarity, Stats } from '../engine/types';
+import { dominant } from '../engine/behaviour';
 import { CreatureSVG } from './CreatureSVG';
 
 export const CARD_W = 900;
@@ -65,7 +66,7 @@ export function downloadBlob(blob: Blob, fileName: string): void {
 export async function creatureSvgMarkup(creature: Creature, size = 720): Promise<string> {
   const { renderToStaticMarkup } = await import('react-dom/server');
   const markup = renderToStaticMarkup(
-    createElement(CreatureSVG, { genome: creature.genome, stage: creature.stage, size, animated: false, shadow: true, lite: false }),
+    createElement(CreatureSVG, { genome: creature.genome, stage: creature.stage, size, animated: false, shadow: true, lite: false, framing: 'tight', personality: dominant(creature.tendencies) }),
   );
   return markup.includes('xmlns=') ? markup : markup.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
 }
