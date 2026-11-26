@@ -1,0 +1,89 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: background 0.8s ease;
+}
+.bd-glow {
+  position: absolute;
+  inset: 0;
+  animation: bd-breathe 9s ease-in-out infinite;
+}
+.bd-glow-2 {
+  animation-delay: -4s;
+}
+@keyframes bd-breathe {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+.bd-flora {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 62%;
+}
+.bd-layer-2 { transform: translateY(-40px); }
+.bd-layer-1 { transform: translateY(-14px); }
+.bd-sway { animation: bd-sway 7s ease-in-out infinite; transform-box: view-box; }
+@keyframes bd-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+.bd-bob { animation: bd-bob 8s ease-in-out infinite; }
+@keyframes bd-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.bd-pulse { animation: bd-pulse 3s ease-in-out infinite; }
+@keyframes bd-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.bd-flicker { animation: bd-flicker 4s ease-in-out infinite; }
+@keyframes bd-flicker {
+  0%, 100% { opacity: 0.25; }
+  45% { opacity: 0.9; }
+  55% { opacity: 0.5; }
+}
+.bd-spores span {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: bd-spore linear infinite;
+}
+@keyframes bd-spore {
+  0% { transform: translate(0, 30px); opacity: 0; }
+  15% { opacity: 0.8; }
+  85% { opacity: 0.6; }
+  100% { transform: translate(40px, -160px); opacity: 0; }
+}
+.bd-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(2, 3, 8, 0.85) 100%);
+}
+.bd-dim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  transition: opacity 0.6s ease;
+}
+.bd-lightning {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 10%, rgba(255, 240, 160, 0.35), transparent 50%);
+  animation: bd-lightning 7s steps(1) infinite;
+  opacity: 0;
+}
+@keyframes bd-lightning {
+  0%, 88%, 92%, 100% { opacity: 0; }
+  89%, 91% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop * { animation: none !important; }
+}
+.reduced-motion .backdrop * { animation: none !important; }
