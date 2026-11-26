@@ -18,7 +18,7 @@
   padding: 12px 14px;
   border-radius: 14px;
   border: 1px solid var(--line-2);
-  background: rgba(10, 16, 32, 0.92);
+  background: rgba(25, 32, 38, 0.92);
   backdrop-filter: blur(12px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   cursor: pointer;
@@ -41,8 +41,8 @@
 .toast-discovery svg { color: var(--dxp); }
 .toast-error svg { color: var(--danger); }
 .toast-achievement {
-  border-color: rgba(255, 209, 102, 0.5);
-  background: linear-gradient(120deg, rgba(60, 44, 8, 0.95), rgba(10, 16, 32, 0.95));
-  box-shadow: 0 0 30px rgba(255, 209, 102, 0.25), 0 12px 40px rgba(0, 0, 0, 0.5);
+  border-color: rgba(220, 182, 104, 0.5);
+  background: linear-gradient(120deg, rgba(58, 51, 37, 0.95), rgba(25, 32, 38, 0.95));
+  box-shadow: 0 0 18px rgba(220, 182, 104, 0.125), 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 .toast-achievement svg { color: var(--dxp); }

@@ -1,8 +1,8 @@
 /* Fusion Chamber. All classes prefixed `lab-`. Animations use transform/opacity. */
 
 .lab {
-  --ca: #2bf0c0;
-  --cb: #d98bff;
+  --ca: #82c6a6;
+  --cb: #b6a1d6;
   position: relative;
 }
 
@@ -31,8 +31,8 @@
   margin: 0;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(43, 240, 192, 0.35);
-  background: rgba(43, 240, 192, 0.08);
+  border: 1px solid rgba(130, 198, 166, 0.35);
+  background: rgba(130, 198, 166, 0.08);
   color: var(--bio-2);
   font-size: 14px;
 }
@@ -56,8 +56,8 @@
   background:
     radial-gradient(55% 60% at 22% 42%, color-mix(in srgb, var(--ca) 16%, transparent), transparent 70%),
     radial-gradient(55% 60% at 78% 42%, color-mix(in srgb, var(--cb) 16%, transparent), transparent 70%),
-    repeating-linear-gradient(0deg, rgba(160, 200, 255, 0.04) 0 1px, transparent 1px 30px),
-    repeating-linear-gradient(90deg, rgba(160, 200, 255, 0.04) 0 1px, transparent 1px 30px);
+    repeating-linear-gradient(0deg, rgba(236, 228, 210, 0.04) 0 1px, transparent 1px 30px),
+    repeating-linear-gradient(90deg, rgba(236, 228, 210, 0.04) 0 1px, transparent 1px 30px);
   -webkit-mask-image: radial-gradient(ellipse at 50% 45%, #000 35%, transparent 85%);
   mask-image: radial-gradient(ellipse at 50% 45%, #000 35%, transparent 85%);
 }
@@ -141,11 +141,9 @@
   isolation: isolate;
   background:
     radial-gradient(120% 70% at 50% 100%, color-mix(in srgb, var(--pc) 30%, transparent), transparent 62%),
-    linear-gradient(180deg, rgba(12, 20, 40, 0.55), rgba(5, 9, 20, 0.85));
+    linear-gradient(180deg, rgba(21, 25, 35, 0.55), rgba(11, 14, 19, 0.85));
   border: 1px solid color-mix(in srgb, var(--pc) 40%, transparent);
-  box-shadow:
-    inset 0 0 50px color-mix(in srgb, var(--pc) 18%, transparent),
-    0 0 40px color-mix(in srgb, var(--pc) 16%, transparent),
+  box-shadow:inset 0 0 30px color-mix(in srgb, var(--pc) 9%, transparent),0 0 24px color-mix(in srgb, var(--pc) 8%, transparent),
     0 24px 50px rgba(0, 0, 0, 0.45);
   transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
 }
@@ -168,9 +166,7 @@
 .lab-pod.focused .lab-capsule {
   border-color: var(--pc);
   box-shadow:
-    0 0 0 1px var(--pc),
-    inset 0 0 60px color-mix(in srgb, var(--pc) 28%, transparent),
-    0 0 54px color-mix(in srgb, var(--pc) 36%, transparent),
+    0 0 0 1px var(--pc),inset 0 0 36px color-mix(in srgb, var(--pc) 14%, transparent),0 0 32.4px color-mix(in srgb, var(--pc) 18%, transparent),
     0 24px 50px rgba(0, 0, 0, 0.45);
 }
 .lab-pod.empty .lab-capsule {
@@ -255,10 +251,9 @@
   height: 14px;
   margin-top: 4px;
   border-radius: 6px 6px 50% 50%;
-  background: linear-gradient(180deg, #1c2946, #090e1c);
+  background: linear-gradient(180deg, #292f3c, #101319);
   border: 1px solid var(--line-2);
-  box-shadow:
-    0 0 26px color-mix(in srgb, var(--pc) 45%, transparent),
+  box-shadow:0 0 15.6px color-mix(in srgb, var(--pc) 22%, transparent),
     0 -4px 14px color-mix(in srgb, var(--pc) 30%, transparent);
 }
 .lab-pod-info {
@@ -389,10 +384,7 @@
   inset: 22%;
   overflow: hidden;
   background: radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.95) 0, color-mix(in srgb, var(--ca) 70%, white) 16%, var(--ca) 40%, var(--cb) 78%, color-mix(in srgb, var(--cb) 50%, black) 100%);
-  box-shadow:
-    0 0 30px color-mix(in srgb, var(--ca) 80%, transparent),
-    0 0 64px color-mix(in srgb, var(--cb) 55%, transparent),
-    inset 0 0 18px rgba(255, 255, 255, 0.4);
+  box-shadow:0 0 18px color-mix(in srgb, var(--ca) 40%, transparent),0 0 38.4px color-mix(in srgb, var(--cb) 28%, transparent),inset 0 0 10.8px rgba(255, 255, 255, 0.2);
   animation: lab-orb 2.6s ease-in-out infinite;
 }
 .lab-core-dna {
@@ -451,7 +443,7 @@
   height: 80px;
   border-radius: 50%;
   border: 3px solid #ffffff;
-  box-shadow: 0 0 30px var(--ca), inset 0 0 30px var(--cb);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--ca) 50%, transparent), inset 0 0 18px color-mix(in srgb, var(--cb) 50%, transparent);
 }
 .lab-shock-2 {
   border: 6px solid color-mix(in srgb, var(--cb) 80%, white);
@@ -479,7 +471,7 @@
   inset: 0;
   z-index: 95;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 45%, #ffffff 0, rgba(255, 255, 255, 0.94) 35%, rgba(225, 242, 255, 0.78) 100%);
+  background: radial-gradient(circle at 50% 45%, #ffffff 0, rgba(255, 255, 255, 0.94) 35%, rgba(214, 224, 231, 0.78) 100%);
 }
 
 /* ---------- FUSE bar ---------- */
@@ -520,7 +512,7 @@
   letter-spacing: 0.03em;
   padding: 3px 9px;
   border-radius: 999px;
-  background: rgba(3, 20, 15, 0.16);
+  background: rgba(15, 29, 23, 0.16);
 }
 .lab-fuse-meta {
   min-height: 18px;
@@ -534,14 +526,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #ff7fe3;
+  color: #d99cc0;
   font-size: 13px;
 }
 .lab-opposed {
   padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 79, 216, 0.4);
-  background: rgba(255, 79, 216, 0.08);
+  border: 1px solid rgba(212, 138, 176, 0.4);
+  background: rgba(212, 138, 176, 0.08);
   animation: lab-blink 2.4s ease-in-out infinite;
 }
 .lab-opposed-mini {
@@ -594,9 +586,9 @@
   border-radius: 50%;
   font-size: 11px;
   font-weight: 800;
-  color: #03140f;
+  color: #0f1d17;
   background: var(--el);
-  box-shadow: 0 0 10px var(--el);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--el) 50%, transparent);
 }
 .lab-remix-badge {
   font-size: 10px;
@@ -606,8 +598,8 @@
   padding: 2px 7px;
   border-radius: 999px;
   color: var(--dxp);
-  background: rgba(255, 209, 102, 0.16);
-  border: 1px solid rgba(255, 209, 102, 0.45);
+  background: rgba(220, 182, 104, 0.16);
+  border: 1px solid rgba(220, 182, 104, 0.45);
 }
 
 /* ---------- Trait table ---------- */
@@ -663,7 +655,7 @@
   color: var(--ink-3);
 }
 .lab-tt-row.same {
-  background: rgba(43, 240, 192, 0.06);
+  background: rgba(130, 198, 166, 0.06);
 }
 .lab-tt-row.same .lab-tt-label {
   color: var(--bio);
@@ -721,7 +713,7 @@
   height: 300px;
   border-radius: 50%;
   pointer-events: none;
-  background: conic-gradient(from 0deg, #ff4fd8, #7b8cff, #3dd6ff, #7dff8a, #ffe14d, #ff7a3d, #ff4fd8);
+  background: conic-gradient(from 0deg, #d48ab0, #8f9bd2, #6fb0c8, #9cc48a, #dcc068, #df8a5e, #d48ab0);
   filter: blur(34px);
   opacity: 0.5;
   animation: lab-spin 5s linear infinite;
@@ -745,7 +737,7 @@
   inset: 0;
 }
 .lab-reveal-sil {
-  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--rc) 85%, transparent));
+  filter: drop-shadow(0 0 9.6px color-mix(in srgb, var(--rc) 42%, transparent));
 }
 .lab-reveal-info {
   position: relative;
@@ -763,7 +755,7 @@
   line-height: 1;
   color: #ffffff;
   overflow-wrap: anywhere;
-  text-shadow: 0 0 24px color-mix(in srgb, var(--rc) 70%, transparent), 0 0 60px color-mix(in srgb, var(--rc) 40%, transparent);
+  text-shadow: 0 0 14.4px color-mix(in srgb, var(--rc) 24%, transparent), 0 0 36px color-mix(in srgb, var(--rc) 14%, transparent);
 }
 .lab-letters > span {
   display: inline-block;
@@ -791,9 +783,9 @@
   gap: 12px;
   padding: 12px 14px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 79, 216, 0.45);
-  background: linear-gradient(135deg, rgba(255, 79, 216, 0.15), rgba(140, 80, 255, 0.08));
-  box-shadow: 0 0 30px rgba(255, 79, 216, 0.16);
+  border: 1px solid rgba(212, 138, 176, 0.45);
+  background: linear-gradient(135deg, rgba(212, 138, 176, 0.15), rgba(154, 134, 200, 0.08));
+  box-shadow: 0 0 18px rgba(212, 138, 176, 0.08);
   text-align: left;
 }
 .lab-mutation-icon {
@@ -803,15 +795,15 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  color: #ff8be6;
-  background: rgba(255, 79, 216, 0.2);
+  color: #d99cc0;
+  background: rgba(212, 138, 176, 0.2);
 }
 .lab-mutation-kicker {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #ff8be6;
+  color: #d99cc0;
 }
 .lab-mutation-card b {
   font-family: var(--display);
@@ -832,12 +824,12 @@
   gap: 6px 10px;
   padding: 10px 16px;
   border-radius: 14px;
-  color: #08020f;
+  color: #0a060d;
   font-family: var(--display);
   letter-spacing: 0.2em;
-  background: linear-gradient(90deg, #ff4fd8, #7b8cff, #3dd6ff, #7dff8a, #ffe14d, #ff7a3d, #ff4fd8);
+  background: linear-gradient(90deg, #d48ab0, #8f9bd2, #6fb0c8, #9cc48a, #dcc068, #df8a5e, #d48ab0);
   background-size: 200% 100%;
-  box-shadow: 0 0 40px rgba(255, 79, 216, 0.45);
+  box-shadow: 0 0 24px rgba(212, 138, 176, 0.225);
   animation: lab-rainbow 3s linear infinite;
 }
 .lab-anomaly-banner span {
@@ -847,12 +839,12 @@
   opacity: 0.8;
 }
 .lab-reveal-anomaly .lab-reveal-hero {
-  border-color: rgba(255, 79, 216, 0.5);
-  box-shadow: 0 0 0 1px rgba(255, 79, 216, 0.3), 0 0 60px rgba(255, 79, 216, 0.25), var(--shadow);
+  border-color: rgba(212, 138, 176, 0.5);
+  box-shadow: 0 0 0 1px rgba(212, 138, 176, 0.3), 0 0 36px rgba(212, 138, 176, 0.125), var(--shadow);
 }
 .lab-reveal-anomaly .lab-rays {
   opacity: 0.45;
-  background: repeating-conic-gradient(#ff4fd8 0 5deg, transparent 5deg 12deg, #3dd6ff 12deg 17deg, transparent 17deg 24deg, #ffe14d 24deg 29deg, transparent 29deg 36deg);
+  background: repeating-conic-gradient(#d48ab0 0 5deg, transparent 5deg 12deg, #6fb0c8 12deg 17deg, transparent 17deg 24deg, #dcc068 24deg 29deg, transparent 29deg 36deg);
   animation-duration: 18s;
 }
 .lab-reveal-anomaly .lab-reveal-art {
@@ -869,11 +861,11 @@
   animation: lab-glitch 2.6s steps(1) 1.6s infinite;
 }
 .lab-glitch::before {
-  color: #3dd6ff;
+  color: #6fb0c8;
   clip-path: inset(0 0 55% 0);
 }
 .lab-glitch::after {
-  color: #ff4fd8;
+  color: #d48ab0;
   clip-path: inset(50% 0 0 0);
   animation-delay: 1.75s;
 }
@@ -916,7 +908,7 @@
   background: rgba(255, 255, 255, 0.025);
 }
 .lab-inherit li.is-new {
-  background: linear-gradient(90deg, rgba(255, 79, 216, 0.12), rgba(255, 79, 216, 0.02));
+  background: linear-gradient(90deg, rgba(212, 138, 176, 0.12), rgba(212, 138, 176, 0.02));
 }
 .lab-inherit-trait {
   font-size: 11px;
@@ -970,9 +962,9 @@
 .lab-tag-new {
   color: #ffffff;
   letter-spacing: 0.12em;
-  border-color: #ff4fd8;
-  background: rgba(255, 79, 216, 0.3);
-  box-shadow: 0 0 12px rgba(255, 79, 216, 0.5);
+  border-color: #d48ab0;
+  background: rgba(212, 138, 176, 0.3);
+  box-shadow: 0 0 7.2px rgba(212, 138, 176, 0.25);
 }
 .lab-stat-list {
   display: grid;

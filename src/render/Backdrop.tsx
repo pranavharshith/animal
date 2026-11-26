@@ -7,7 +7,7 @@ import './backdrop.css';
 
 export type BackdropKind = EnvironmentId | 'lab';
 
-const LAB = { sky: ['#03050c', '#071428', '#0b2a3a'] as [string, string, string], ground: '#04101a', glow: '#2bf0c0' };
+const LAB = { sky: ['#03050c', '#131922', '#212d35'] as [string, string, string], ground: '#0e1418', glow: '#82c6a6' };
 
 function flora(kind: BackdropKind, seed: number, layer: number, color: string, glow: string) {
   const rng = mulberry32(hashSeed(seed, kind, layer));
@@ -68,7 +68,7 @@ function BackdropInner({ kind = 'lab', dim = 0, seed = 7 }: { kind?: BackdropKin
     return Array.from({ length: 26 }, (_, i) => ({
       left: `${range(rng, 0, 100).toFixed(1)}%`,
       top: `${range(rng, 10, 95).toFixed(1)}%`,
-      size: range(rng, 2, 6),
+      size: range(rng, 1.5, 4.5),
       delay: -range(rng, 0, 14),
       dur: range(rng, 10, 22),
       hueShift: i % 3,
@@ -79,8 +79,8 @@ function BackdropInner({ kind = 'lab', dim = 0, seed = 7 }: { kind?: BackdropKin
 
   return (
     <div className="backdrop" aria-hidden="true" style={{ background: `linear-gradient(180deg, ${env.sky[0]} 0%, ${env.sky[1]} 55%, ${env.sky[2]} 100%)` }}>
-      <div className="bd-glow" style={{ background: `radial-gradient(ellipse at 50% 85%, ${env.glow}33 0%, transparent 60%)` }} />
-      <div className="bd-glow bd-glow-2" style={{ background: `radial-gradient(circle at 15% 20%, ${env.glow}1c 0%, transparent 40%)` }} />
+      <div className="bd-glow" style={{ background: `radial-gradient(ellipse at 50% 85%, ${env.glow}24 0%, transparent 62%)` }} />
+      <div className="bd-glow bd-glow-2" style={{ background: `radial-gradient(circle at 15% 20%, ${env.glow}14 0%, transparent 42%)` }} />
       {kind === 'stormlands' && <div className="bd-lightning" />}
       <svg className="bd-flora" viewBox="0 0 1600 600" preserveAspectRatio="xMidYMax slice">
         {layers.map((l) => (
@@ -101,12 +101,13 @@ function BackdropInner({ kind = 'lab', dim = 0, seed = 7 }: { kind?: BackdropKin
               height: s.size,
               animationDelay: `${s.delay}s`,
               animationDuration: `${s.dur}s`,
-              background: s.hueShift === 0 ? env.glow : s.hueShift === 1 ? '#ffffff' : env.glow,
-              boxShadow: `0 0 ${s.size * 3}px ${env.glow}`,
+              background: s.hueShift === 1 ? '#ece6da' : env.glow,
+              boxShadow: `0 0 ${s.size * 1.6}px ${env.glow}66`,
             }}
           />
         ))}
       </div>
+      <div className="bd-grain" />
       <div className="bd-vignette" style={{ opacity: 0.85 + dim * 0.15 }} />
       {dim > 0 && <div className="bd-dim" style={{ opacity: dim }} />}
     </div>

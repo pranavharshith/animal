@@ -43,8 +43,8 @@ const TIMING = {
   reduced: { charge: 400, burst: 200 },
 };
 
-const FALLBACK_A = '#2bf0c0';
-const FALLBACK_B = '#d98bff';
+const FALLBACK_A = '#82c6a6';
+const FALLBACK_B = '#b6a1d6';
 
 /** Typed helper for inline CSS custom properties. */
 const vars = (v: Record<string, string | number>) => v as CSSProperties;
@@ -314,7 +314,7 @@ function Pod({
   podRef: RefObject<HTMLDivElement | null>;
   onFocus: () => void;
 }) {
-  const color = elColor(creature, '#5a6a8a');
+  const color = elColor(creature, '#616a7d');
   const target =
     phase === 'charging'
       ? { x: travel, scale: 0.55, opacity: 1 }
@@ -496,7 +496,7 @@ function BurstFx({ colors, reduced }: { colors: string[]; reduced: boolean }) {
         <motion.i
           key={i}
           className="lab-spark"
-          style={{ width: p.size, height: p.size, background: p.color, boxShadow: `0 0 12px ${p.color}` }}
+          style={{ width: p.size, height: p.size, background: p.color, boxShadow: `0 0 6px ${p.color}66` }}
           initial={{ x: 0, y: 0, scale: 1.2, opacity: 1 }}
           animate={{ x: p.x, y: p.y, scale: 0.2, opacity: 0 }}
           transition={{ duration: p.dur, delay: p.delay, ease: [0.1, 0.8, 0.3, 1] }}
@@ -600,11 +600,11 @@ function TraitTable({ a, b }: { a: Creature | null; b: Creature | null }) {
 // ---------------------------------------------------------------------------
 
 const STAT_META: Array<{ key: keyof Stats; label: string; max: number; color: string }> = [
-  { key: 'vigor', label: 'Vigor', max: 160, color: '#7dff8a' },
-  { key: 'power', label: 'Power', max: 40, color: '#ff7a3d' },
-  { key: 'guard', label: 'Guard', max: 16, color: '#5da9ff' },
-  { key: 'speed', label: 'Speed', max: 28, color: '#5dffb4' },
-  { key: 'focus', label: 'Focus', max: 28, color: '#d98bff' },
+  { key: 'vigor', label: 'Vigor', max: 160, color: '#9cc48a' },
+  { key: 'power', label: 'Power', max: 40, color: '#df8a5e' },
+  { key: 'guard', label: 'Guard', max: 16, color: '#7ea4cf' },
+  { key: 'speed', label: 'Speed', max: 28, color: '#86c4a0' },
+  { key: 'focus', label: 'Focus', max: 28, color: '#b6a1d6' },
 ];
 
 function Letters({ text, delay, reduced }: { text: string; delay: number; reduced: boolean }) {
@@ -633,7 +633,7 @@ function RevealSparks({ colors }: { colors: string[] }) {
         <motion.i
           key={i}
           className="lab-spark"
-          style={{ width: p.size * 0.7, height: p.size * 0.7, background: p.color, boxShadow: `0 0 10px ${p.color}` }}
+          style={{ width: p.size * 0.7, height: p.size * 0.7, background: p.color, boxShadow: `0 0 5px ${p.color}66` }}
           initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
           animate={{ x: p.x, y: p.y, opacity: [0, 1, 0], scale: [0.4, 1, 0.3] }}
           transition={{ duration: 2.2 + p.dur, delay: 0.6 + p.delay * 12, repeat: Infinity, ease: 'easeOut' }}

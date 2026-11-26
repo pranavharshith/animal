@@ -84,7 +84,7 @@ function SpecimenCardPreview({ creature, reduced = false }: { creature: Creature
               <ElementIcon element={g.element} size={12} color="currentColor" /> {el.name}
             </span>
             <span style={{ '--cc': rar.color } as CSSProperties}>{rar.name}</span>
-            <span style={{ '--cc': '#a9b8d6' } as CSSProperties}>
+            <span style={{ '--cc': '#b3ad9f' } as CSSProperties}>
               Stage {creature.stage} · Gen {creature.generation}
             </span>
           </div>
@@ -94,7 +94,7 @@ function SpecimenCardPreview({ creature, reduced = false }: { creature: Creature
                 <div key={s.key} className="show-stat">
                   <span>{s.label}</span>
                   <i>
-                    <b style={{ width: `${Math.max(4, Math.min(100, (stats[s.key] / s.max) * 100))}%`, background: s.color, boxShadow: `0 0 8px ${s.color}` }} />
+                    <b style={{ width: `${Math.max(4, Math.min(100, (stats[s.key] / s.max) * 100))}%`, background: s.color }} />
                   </i>
                   <em>{stats[s.key]}</em>
                 </div>
@@ -275,7 +275,7 @@ export default function ShowcaseModal({ creatureId, onClose }: { creatureId: str
             {copied === 'link' ? 'Copied' : 'Copy remix link'}
           </button>
           {canNativeShare && (
-            <button className="btn btn-ghost" style={{ '--c': '#d98bff' } as CSSProperties} onClick={() => void share()} disabled={busy !== null}>
+            <button className="btn btn-ghost" style={{ '--c': '#b6a1d6' } as CSSProperties} onClick={() => void share()} disabled={busy !== null}>
               {busy === 'share' ? <Loader2 size={16} className="show-spin" /> : <Share2 size={16} />}
               Share
             </button>

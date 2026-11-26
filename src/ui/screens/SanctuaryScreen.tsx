@@ -198,10 +198,10 @@ const Flora = memo(function Flora({ layer }: { layer: 'back' | 'left' | 'right' 
   const items = useMemo(() => {
     const rng = mulberry32(hashSeed('sanc-flora', layer));
     const out: ReactNode[] = [];
-    const glows = ['#2bf0c0', '#7affdd', '#c77dff', '#7dff8a', '#3dd6ff'];
+    const glows = ['#82c6a6', '#a9d9c2', '#a88dc8', '#9cc48a', '#6fb0c8'];
     if (layer === 'back') {
       // Distant ridge + tall glowing stalks along the horizon line.
-      out.push(<path key="hill" d="M0,330 C200,280 340,310 520,290 C720,268 880,300 1040,280 C1120,272 1170,290 1200,286 L1200,600 L0,600Z" fill="#04140f" opacity={0.9} />);
+      out.push(<path key="hill" d="M0,330 C200,280 340,310 520,290 C720,268 880,300 1040,280 C1120,272 1170,290 1200,286 L1200,600 L0,600Z" fill="#101714" opacity={0.9} />);
       for (let i = 0; i < 14; i++) {
         const x = (i / 14) * 1200 + range(rng, 0, 70);
         const h = range(rng, 90, 210);
@@ -210,7 +210,7 @@ const Flora = memo(function Flora({ layer }: { layer: 'back' | 'left' | 'right' 
         const bend = range(rng, -30, 30);
         out.push(
           <g key={`s${i}`} className="sanc-sway" style={{ transformOrigin: `${x}px ${base}px`, animationDelay: `${-rng() * 8}s` }} opacity={0.8}>
-            <path d={`M${x},${base} Q${x + bend},${base - h * 0.55} ${x + bend * 0.4},${base - h}`} stroke="#0b3a2c" strokeWidth={range(rng, 4, 8)} fill="none" strokeLinecap="round" />
+            <path d={`M${x},${base} Q${x + bend},${base - h * 0.55} ${x + bend * 0.4},${base - h}`} stroke="#293a34" strokeWidth={range(rng, 4, 8)} fill="none" strokeLinecap="round" />
             <circle cx={x + bend * 0.4} cy={base - h} r={range(rng, 6, 12)} fill={g} opacity={0.7} className="sanc-pulse" style={{ animationDelay: `${rng() * 4}s` }} />
           </g>,
         );
@@ -222,7 +222,7 @@ const Flora = memo(function Flora({ layer }: { layer: 'back' | 'left' | 'right' 
         const g = glows[Math.floor(rng() * glows.length)];
         out.push(
           <g key={`m${i}`} opacity={0.65}>
-            <rect x={x - w * 0.12} y={base - w * 0.9} width={w * 0.24} height={w * 0.9} rx={w * 0.1} fill="#0c3326" />
+            <rect x={x - w * 0.12} y={base - w * 0.9} width={w * 0.24} height={w * 0.9} rx={w * 0.1} fill="#25342e" />
             <path d={`M${x - w * 0.7},${base - w * 0.85} Q${x},${base - w * 1.6} ${x + w * 0.7},${base - w * 0.85}Z`} fill={g} opacity={0.4} />
             <path d={`M${x - w * 0.7},${base - w * 0.85} Q${x},${base - w * 1.6} ${x + w * 0.7},${base - w * 0.85}`} fill="none" stroke={g} strokeWidth={2} className="sanc-pulse" style={{ animationDelay: `${rng() * 4}s` }} />
           </g>,
@@ -248,8 +248,8 @@ const Flora = memo(function Flora({ layer }: { layer: 'back' | 'left' | 'right' 
       const g = glows[(off + 2) % glows.length];
       out.push(
         <g key="fm">
-          <rect x={mx - mw * 0.14} y={600 - mw * 1.1} width={mw * 0.28} height={mw * 1.1} rx={mw * 0.12} fill="#062019" />
-          <path d={`M${mx - mw},${600 - mw * 1.05} Q${mx},${600 - mw * 2} ${mx + mw},${600 - mw * 1.05}Z`} fill="#082a20" stroke={g} strokeWidth={2.5} />
+          <rect x={mx - mw * 0.14} y={600 - mw * 1.1} width={mw * 0.28} height={mw * 1.1} rx={mw * 0.12} fill="#18221f" />
+          <path d={`M${mx - mw},${600 - mw * 1.05} Q${mx},${600 - mw * 2} ${mx + mw},${600 - mw * 1.05}Z`} fill="#1f2b27" stroke={g} strokeWidth={2.5} />
           {[0.25, 0.5, 0.75].map((t, k) => (
             <circle key={k} cx={mx - mw + t * mw * 2} cy={600 - mw * (1.12 + 0.3 * Math.sin(t * Math.PI))} r={3 + k} fill={g} className="sanc-pulse" style={{ animationDelay: `${k * 0.7}s` }} />
           ))}

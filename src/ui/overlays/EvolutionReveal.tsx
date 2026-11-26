@@ -318,7 +318,7 @@ function Converge({ color, color2 }: { color: string; color2: string }) {
       {motes.map((m, i) => (
         <motion.i
           key={i}
-          style={{ width: m.len, background: `linear-gradient(90deg, ${m.color}, transparent)`, boxShadow: `0 0 8px ${m.color}`, rotate: m.rot }}
+          style={{ width: m.len, background: `linear-gradient(90deg, ${m.color}, transparent)`, boxShadow: `0 0 5px ${m.color}66`, rotate: m.rot }}
           initial={{ x: m.x, y: m.y, opacity: 0 }}
           animate={{ x: [m.x, m.x * 0.08], y: [m.y, m.y * 0.08], opacity: [0, 1, 0] }}
           transition={{ duration: m.dur, delay: m.delay, repeat: Infinity, repeatDelay: m.rest, ease: 'easeIn' }}
@@ -359,7 +359,7 @@ function Explosion({ colors }: { colors: string[] }) {
       {sparks.map((s, i) => (
         <motion.i
           key={i}
-          style={{ width: s.size, height: s.size, background: s.color, boxShadow: `0 0 14px ${s.color}` }}
+          style={{ width: s.size, height: s.size, background: s.color, boxShadow: `0 0 7px ${s.color}66` }}
           initial={{ x: 0, y: 0, scale: 1.3, opacity: 1 }}
           animate={{ x: s.x, y: s.y, scale: 0.2, opacity: 0 }}
           transition={{ duration: s.dur, delay: s.delay, ease: [0.1, 0.8, 0.3, 1] }}

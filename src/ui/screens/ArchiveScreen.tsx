@@ -153,7 +153,7 @@ export default function ArchiveScreen() {
               <Download size={14} />
               Import genome
             </button>
-            <button className="btn btn-sm btn-ghost" onClick={() => ui.go('lab')} style={{ '--c': '#d98bff' } as CSSProperties}>
+            <button className="btn btn-sm btn-ghost" onClick={() => ui.go('lab')} style={{ '--c': '#b6a1d6' } as CSSProperties}>
               <FlaskConical size={14} />
               Fusion Lab
             </button>

@@ -347,7 +347,7 @@ function EvolutionBox({ c, shards, ok, reason, onEvolve }: { c: Creature; shards
 function Swatch({ label, color }: { label: string; color: string }) {
   return (
     <span className="det-swatch">
-      <i style={{ background: color, boxShadow: `0 0 12px ${color}` }} />
+      <i style={{ background: color }} />
       {label}
     </span>
   );
@@ -409,7 +409,7 @@ function MutationsPanel({ c }: { c: Creature }) {
         <div className="det-mut-list">
           {muts.map((m) => {
             const info = MUTATION_INFO[m];
-            const color = info.element ? ELEMENT_INFO[info.element].color : '#d98bff';
+            const color = info.element ? ELEMENT_INFO[info.element].color : '#b6a1d6';
             return (
               <div key={m} className="det-mut" style={{ ['--c' as string]: color } as CSSProperties}>
                 <Dna size={16} />
@@ -443,11 +443,11 @@ function MutationsPanel({ c }: { c: Creature }) {
 function StatsPanel({ c }: { c: Creature }) {
   const s = computeStats(c);
   const rows: Array<[string, number, number, string]> = [
-    ['Vigor', s.vigor, 150, '#5dffb4'],
-    ['Power', s.power, 40, '#ff5d5d'],
-    ['Guard', s.guard, 40, '#5da9ff'],
-    ['Speed', s.speed, 40, '#ffd35d'],
-    ['Focus', s.focus, 40, '#d78bff'],
+    ['Vigor', s.vigor, 150, '#86c4a0'],
+    ['Power', s.power, 40, '#d9766e'],
+    ['Guard', s.guard, 40, '#7ea4cf'],
+    ['Speed', s.speed, 40, '#dcbf6e'],
+    ['Focus', s.focus, 40, '#b59bd2'],
   ];
   return (
     <div className="det-stats">

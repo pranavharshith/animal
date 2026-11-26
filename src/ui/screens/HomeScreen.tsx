@@ -254,8 +254,8 @@ function DiscoveryCard({ found, onOpen }: { found: number; onOpen: () => void })
         <svg viewBox="0 0 100 100" className="home-ring-svg" aria-hidden>
           <defs>
             <linearGradient id="home-disc-g" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#7affdd" />
-              <stop offset="1" stopColor="#d98bff" />
+              <stop offset="0" stopColor="#a9d9c2" />
+              <stop offset="1" stopColor="#b6a1d6" />
             </linearGradient>
           </defs>
           <circle cx="50" cy="50" r={R} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="8" />
@@ -307,7 +307,7 @@ function DailyCard({ claimed, onClaim, onOpen }: { claimed: boolean; onClaim: ()
   };
 
   return (
-    <div className={`home-card glass home-daily ${claimed ? 'claimed' : ''}`} style={{ ['--el' as string]: claimed ? el.color : '#ff4fd8' } as CSSProperties}>
+    <div className={`home-card glass home-daily ${claimed ? 'claimed' : ''}`} style={{ ['--el' as string]: claimed ? el.color : '#d48ab0' } as CSSProperties}>
       <div className="eyebrow">Daily anomaly</div>
       <div className="home-daily-art">
         <AnimatePresence mode="wait">
@@ -339,7 +339,7 @@ function DailyCard({ claimed, onClaim, onOpen }: { claimed: boolean; onClaim: ()
         </div>
       ) : (
         <div className="home-daily-foot">
-          <button className="btn btn-primary" style={{ ['--c' as string]: '#ff4fd8' } as CSSProperties} onClick={capture}>
+          <button className="btn btn-primary" style={{ ['--c' as string]: '#d48ab0' } as CSSProperties} onClick={capture}>
             <Gift size={16} /> Capture
           </button>
           <span className="dim">One rare specimen per day</span>

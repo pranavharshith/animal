@@ -84,8 +84,8 @@ export default function CollectionScreen() {
     return [
       { label: 'Fusions', value: state.fusionCount, icon: FlaskConical, color: 'var(--bio)' },
       { label: 'Expeditions', value: exp, icon: Compass, color: 'var(--dxp)' },
-      { label: 'Victories', value: wins, icon: Swords, color: '#ff7a3d' },
-      { label: 'Top generation', value: gen, icon: Layers, color: '#5ec8ff' },
+      { label: 'Victories', value: wins, icon: Swords, color: '#df8a5e' },
+      { label: 'Top generation', value: gen, icon: Layers, color: '#7fb1d0' },
       { label: 'Anomalies', value: anomalies, icon: Sparkles, color: RARITY_INFO.anomaly.color },
     ];
   }, [state.creatures, state.fusionCount]);
@@ -264,7 +264,7 @@ export default function CollectionScreen() {
             {MUTATIONS.map((m) => {
               const info = MUTATION_INFO[m];
               const seen = state.seenMutations.includes(m);
-              const color = info.element ? ELEMENT_INFO[info.element].color : '#d98bff';
+              const color = info.element ? ELEMENT_INFO[info.element].color : '#b6a1d6';
               return (
                 <div key={m} className={`col-mut ${seen ? 'seen' : ''}`} style={{ ['--c' as string]: color } as CSSProperties}>
                   <span className="col-mut-glyph" aria-hidden>

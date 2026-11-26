@@ -35,7 +35,7 @@
   background:
     radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--el) 40%, transparent), transparent 62%),
     radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--el2) 22%, transparent), transparent 50%),
-    linear-gradient(180deg, color-mix(in srgb, var(--eldark) 80%, #05070f), #04060d);
+    linear-gradient(180deg, color-mix(in srgb, var(--eldark) 80%, #121619), #04060d);
 }
 .det-art-ring {
   position: absolute;
@@ -48,7 +48,7 @@
   transform: translateX(-50%);
   border: 2px solid color-mix(in srgb, var(--el) 70%, transparent);
   background: radial-gradient(ellipse, color-mix(in srgb, var(--el) 30%, transparent), transparent 70%);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--el) 50%, transparent);
+  box-shadow: 0 0 14.4px color-mix(in srgb, var(--el) 25%, transparent);
   animation: det-ring 3.2s ease-in-out infinite;
 }
 @keyframes det-ring {
@@ -64,7 +64,7 @@
   width: 88%;
   aspect-ratio: 1;
   margin-top: -6%;
-  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--el) 30%, transparent));
+  filter: drop-shadow(0 0 10.8px color-mix(in srgb, var(--el) 15%, transparent));
 }
 .det-art-foot {
   position: absolute;
@@ -99,7 +99,7 @@
   font-weight: 900;
   line-height: 1.05;
   overflow-wrap: anywhere;
-  text-shadow: 0 0 26px color-mix(in srgb, var(--el) 35%, transparent);
+  text-shadow: 0 0 15.6px color-mix(in srgb, var(--el) 12%, transparent);
 }
 .det-pencil {
   flex: none;
@@ -132,7 +132,7 @@
 }
 .det-active {
   color: var(--bio-2);
-  border-color: rgba(43, 240, 192, 0.5);
+  border-color: rgba(130, 198, 166, 0.5);
 }
 .det-origin {
   margin: 0;
@@ -149,17 +149,17 @@
   gap: 14px;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 1px solid rgba(217, 139, 255, 0.25);
-  background: linear-gradient(90deg, rgba(217, 139, 255, 0.1), rgba(255, 209, 102, 0.04));
+  border: 1px solid rgba(182, 161, 214, 0.25);
+  background: linear-gradient(90deg, rgba(182, 161, 214, 0.1), rgba(220, 182, 104, 0.04));
 }
 .det-evo.ready {
-  border-color: rgba(217, 139, 255, 0.7);
-  box-shadow: 0 0 26px rgba(217, 139, 255, 0.25);
+  border-color: rgba(182, 161, 214, 0.7);
+  box-shadow: 0 0 15.6px rgba(182, 161, 214, 0.125);
 }
 .det-evo.final {
   color: var(--dxp);
-  border-color: rgba(255, 209, 102, 0.35);
-  background: linear-gradient(90deg, rgba(255, 209, 102, 0.12), transparent);
+  border-color: rgba(220, 182, 104, 0.35);
+  background: linear-gradient(90deg, rgba(220, 182, 104, 0.12), transparent);
 }
 .det-evo.final div {
   display: flex;
@@ -197,7 +197,7 @@
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--dxp), var(--shard));
-  box-shadow: 0 0 10px rgba(217, 139, 255, 0.5);
+  box-shadow: 0 0 6px rgba(182, 161, 214, 0.25);
 }
 .det-evo-cost {
   font-size: 12px;
@@ -215,10 +215,10 @@
 @keyframes det-evo-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(217, 139, 255, 0.5);
+    box-shadow: 0 0 0 0 rgba(182, 161, 214, 0.5);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(217, 139, 255, 0);
+    box-shadow: 0 0 0 8px rgba(182, 161, 214, 0);
   }
 }
 
@@ -269,7 +269,7 @@
   height: 2px;
   border-radius: 2px;
   background: var(--el);
-  box-shadow: 0 0 10px var(--el);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--el) 50%, transparent);
 }
 .det-panel {
   min-height: 190px;
@@ -354,7 +354,7 @@
 .det-pips i.on {
   background: var(--dxp);
   border-color: transparent;
-  box-shadow: 0 0 8px var(--dxp);
+  box-shadow: 0 0 4.8px color-mix(in srgb, var(--dxp) 50%, transparent);
 }
 .det-anomaly {
   display: flex;
@@ -362,7 +362,7 @@
   gap: 6px;
   margin: 10px 0 0;
   font-size: 13px;
-  color: #ff4fd8;
+  color: #d48ab0;
 }
 
 /* Mutations */
@@ -382,7 +382,7 @@
 .det-mut > svg {
   flex: none;
   color: var(--c);
-  filter: drop-shadow(0 0 6px var(--c));
+  filter: drop-shadow(0 0 3.6px color-mix(in srgb, var(--c) 50%, transparent));
 }
 .det-mut div {
   display: flex;
@@ -404,7 +404,7 @@
 .det-drift-chip {
   color: var(--shard);
   border-style: dashed;
-  border-color: rgba(217, 139, 255, 0.5);
+  border-color: rgba(182, 161, 214, 0.5);
 }
 
 /* Stats */
@@ -445,7 +445,7 @@
   height: 100%;
   border-radius: inherit;
   background: var(--c);
-  box-shadow: 0 0 10px var(--c);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--c) 50%, transparent);
 }
 .det-env-runs {
   text-align: right;
@@ -489,19 +489,19 @@
   height: 28px;
   border-radius: 50%;
   color: var(--bio);
-  background: rgba(43, 240, 192, 0.1);
-  border: 1px solid rgba(43, 240, 192, 0.35);
+  background: rgba(130, 198, 166, 0.1);
+  border: 1px solid rgba(130, 198, 166, 0.35);
 }
 .det-hist.k-evolution .det-hist-icon,
 .det-hist.k-mutation .det-hist-icon {
   color: var(--shard);
-  background: rgba(217, 139, 255, 0.1);
-  border-color: rgba(217, 139, 255, 0.4);
+  background: rgba(182, 161, 214, 0.1);
+  border-color: rgba(182, 161, 214, 0.4);
 }
 .det-hist.k-expedition .det-hist-icon {
   color: var(--dxp);
-  background: rgba(255, 209, 102, 0.1);
-  border-color: rgba(255, 209, 102, 0.4);
+  background: rgba(220, 182, 104, 0.1);
+  border-color: rgba(220, 182, 104, 0.4);
 }
 .det-hist p {
   margin: 3px 0 0;

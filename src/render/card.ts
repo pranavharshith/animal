@@ -11,19 +11,19 @@ import { CreatureSVG } from './CreatureSVG';
 export const CARD_W = 900;
 export const CARD_H = 1260;
 
-const DISPLAY = "'Unbounded', 'Outfit', system-ui, sans-serif";
+const DISPLAY = "'Fraunces', Georgia, 'Times New Roman', serif";
 const BODY = "'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MONO = "ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace";
 
 export const STAT_META: Array<{ key: keyof Stats; label: string; max: number; color: string }> = [
-  { key: 'vigor', label: 'VIGOR', max: 160, color: '#6dff9e' },
-  { key: 'power', label: 'POWER', max: 40, color: '#ff7a5d' },
-  { key: 'guard', label: 'GUARD', max: 20, color: '#5ec8ff' },
-  { key: 'speed', label: 'SPEED', max: 30, color: '#ffe14d' },
-  { key: 'focus', label: 'FOCUS', max: 30, color: '#d58cff' },
+  { key: 'vigor', label: 'VIGOR', max: 160, color: '#9cc48a' },
+  { key: 'power', label: 'POWER', max: 40, color: '#d98466' },
+  { key: 'guard', label: 'GUARD', max: 20, color: '#7fb1d0' },
+  { key: 'speed', label: 'SPEED', max: 30, color: '#dcc068' },
+  { key: 'focus', label: 'FOCUS', max: 30, color: '#b6a1d6' },
 ];
 
-export const RAINBOW = ['#ff4fd8', '#4fd8ff', '#d8ff4f', '#ffb84f', '#ff4fd8'];
+export const RAINBOW = ['#d48ab0', '#6fb0c8', '#ccd07a', '#e4bb86', '#d48ab0'];
 
 /** Frame gradient stops for a creature: element colour → rarity colour, rainbow for anomalies. */
 export function frameColors(creature: Creature, rarity: Rarity = creatureRarity(creature)): string[] {
@@ -276,10 +276,10 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   // Background gradient
   const bg = ctx.createLinearGradient(0, 0, CARD_W * 0.4, CARD_H);
   bg.addColorStop(0, el.dark);
-  bg.addColorStop(0.45, '#070a16');
+  bg.addColorStop(0.45, '#0d0f14');
   bg.addColorStop(0.78, el.dark);
   bg.addColorStop(1, hexToRgba(el.color, 0.35));
-  ctx.fillStyle = '#05070f';
+  ctx.fillStyle = '#121619';
   ctx.fillRect(0, 0, CARD_W, CARD_H);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, CARD_W, CARD_H);
@@ -366,7 +366,7 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = '#e8f1ff';
+  ctx.fillStyle = '#ece6da';
   ctx.shadowColor = hexToRgba(el.color, 0.8);
   ctx.shadowBlur = 18;
   ctx.font = `900 40px ${DISPLAY}`;
@@ -400,7 +400,7 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   const chips: Array<{ text: string; color: string }> = [
     { text: el.name, color: el.color },
     { text: rarity === 'anomaly' ? `✧ ${rar.name}` : rar.name, color: rar.color },
-    { text: `Stage ${creature.stage} · Gen ${creature.generation}`, color: '#a9b8d6' },
+    { text: `Stage ${creature.stage} · Gen ${creature.generation}`, color: '#b3ad9f' },
   ];
   ctx.font = `600 22px ${BODY}`;
   const padX = 18;
@@ -428,9 +428,9 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   const ph = 152;
   ctx.save();
   roundRect(ctx, ax, py, aw, ph, 24);
-  ctx.fillStyle = 'rgba(8, 14, 30, 0.6)';
+  ctx.fillStyle = 'rgba(16, 19, 26, 0.6)';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(160, 200, 255, 0.14)';
+  ctx.strokeStyle = 'rgba(236, 228, 210, 0.14)';
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
@@ -442,7 +442,7 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   STAT_META.forEach((s, i) => {
     const y = py + 24 + i * 26;
     const v = stats[s.key];
-    ctx.fillStyle = '#a9b8d6';
+    ctx.fillStyle = '#b3ad9f';
     ctx.textAlign = 'left';
     ctx.fillText(s.label, sx, y);
     roundRect(ctx, barX, y - 5, barW, 10, 5);
@@ -455,14 +455,14 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
     ctx.shadowBlur = 10;
     ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.fillStyle = '#e8f1ff';
+    ctx.fillStyle = '#ece6da';
     ctx.textAlign = 'right';
     ctx.fillText(String(v), barX + barW + 46, y);
   });
 
   // Divider
   const mx = ax + aw / 2 + 52;
-  ctx.strokeStyle = 'rgba(160, 200, 255, 0.14)';
+  ctx.strokeStyle = 'rgba(236, 228, 210, 0.14)';
   ctx.beginPath();
   ctx.moveTo(mx - 24, py + 22);
   ctx.lineTo(mx - 24, py + ph - 22);
@@ -470,13 +470,13 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
 
   ctx.textAlign = 'left';
   ctx.font = `600 13px ${BODY}`;
-  ctx.fillStyle = '#6c7a99';
+  ctx.fillStyle = '#807b70';
   spacedLeft(ctx, 'MUTATIONS', mx, py + 26, 3);
   const muts = g.mutations.slice(0, 3);
   const mw = ax + aw - 24 - mx;
   if (muts.length === 0) {
     ctx.font = `500 19px ${BODY}`;
-    ctx.fillStyle = '#6c7a99';
+    ctx.fillStyle = '#807b70';
     ctx.fillText('None recorded', mx, py + 62);
   } else {
     muts.forEach((m, i) => {
@@ -488,13 +488,13 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
       ctx.arc(mx + 6, y, 5, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.fillStyle = '#e8f1ff';
+      ctx.fillStyle = '#ece6da';
       const label = fitText(ctx, MUTATION_INFO[m].name, mw - 24, (px) => `600 ${px}px ${BODY}`, 21, 15);
       ctx.fillText(label, mx + 22, y);
     });
     if (g.mutations.length > 3) {
       ctx.font = `500 15px ${BODY}`;
-      ctx.fillStyle = '#6c7a99';
+      ctx.fillStyle = '#807b70';
       ctx.fillText(`+${g.mutations.length - 3} more`, mx + 22, py + ph - 8);
     }
   }
@@ -505,12 +505,12 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   const bh = 88;
   ctx.save();
   roundRect(ctx, ax, by, aw, bh, 20);
-  ctx.fillStyle = 'rgba(232, 241, 255, 0.92)';
+  ctx.fillStyle = 'rgba(236, 230, 218, 0.92)';
   ctx.fill();
-  barcode(ctx, code, ax + 22, by + 12, aw - 44, 38, '#0a1020');
+  barcode(ctx, code, ax + 22, by + 12, aw - 44, 38, '#192026');
   ctx.textAlign = 'center';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = '#0a1020';
+  ctx.fillStyle = '#192026';
   const codeText = fitText(ctx, code, aw - 44, (px) => `700 ${px}px ${MONO}`, 17, 9);
   ctx.fillText(codeText, CARD_W / 2, by + bh - 14);
   ctx.restore();
@@ -518,7 +518,7 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   ctx.save();
   ctx.textAlign = 'center';
   ctx.font = `500 15px ${BODY}`;
-  ctx.fillStyle = 'rgba(169, 184, 214, 0.7)';
+  ctx.fillStyle = 'rgba(179, 173, 159, 0.7)';
   ctx.fillText('Paste this genome code into WILDSHIFT to grow an exact copy', CARD_W / 2, 1212);
   ctx.restore();
 
@@ -531,7 +531,7 @@ export async function renderSpecimenCard(creature: Creature): Promise<Blob> {
   roundRect(ctx, M + 3, M + 3, CARD_W - (M + 3) * 2, CARD_H - (M + 3) * 2, R - 3);
   ctx.strokeStyle = fg;
   ctx.lineWidth = 6;
-  ctx.shadowColor = rarity === 'anomaly' ? '#ff4fd8' : hexToRgba(el.color, 0.8);
+  ctx.shadowColor = rarity === 'anomaly' ? '#d48ab0' : hexToRgba(el.color, 0.8);
   ctx.shadowBlur = 22;
   ctx.stroke();
   ctx.shadowBlur = 0;

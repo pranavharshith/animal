@@ -13,7 +13,7 @@ import './common.css';
 export function RarityBadge({ rarity, small }: { rarity: Rarity; small?: boolean }) {
   const r = RARITY_INFO[rarity];
   return (
-    <span className={`chip rarity-badge rarity-${rarity} ${small ? 'chip-sm' : ''}`} style={{ color: r.color, borderColor: r.color + '66', boxShadow: `0 0 14px ${r.glow}` }}>
+    <span className={`chip rarity-badge rarity-${rarity} ${small ? 'chip-sm' : ''}`} style={{ color: r.color, borderColor: r.color + '66' }}>
       {rarity === 'anomaly' && <Sparkles size={12} />}
       {r.name}
     </span>
@@ -120,7 +120,7 @@ export function TendencyBars({ tendencies, compact }: { tendencies: Tendencies; 
           <div key={p} className={`tb-row ${p === top ? 'top' : ''}`}>
             <span className="tb-label">{info.name}</span>
             <span className="tb-track">
-              <motion.span className="tb-fill" style={{ background: info.color, boxShadow: `0 0 10px ${info.color}88` }} initial={false} animate={{ width: `${Math.round(sh[p] * 100)}%` }} transition={{ type: 'spring', stiffness: 120, damping: 20 }} />
+              <motion.span className="tb-fill" style={{ background: info.color }} initial={false} animate={{ width: `${Math.round(sh[p] * 100)}%` }} transition={{ type: 'spring', stiffness: 120, damping: 20 }} />
             </span>
             <span className="tb-val">{Math.round(sh[p] * 100)}%</span>
           </div>

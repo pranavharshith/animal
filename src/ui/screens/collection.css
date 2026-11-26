@@ -42,7 +42,7 @@
   color: var(--c);
   background: color-mix(in srgb, var(--c) 14%, rgba(0, 0, 0, 0.3));
   border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
-  box-shadow: 0 0 22px color-mix(in srgb, var(--c) 30%, transparent);
+  box-shadow: 0 0 13.2px color-mix(in srgb, var(--c) 15%, transparent);
 }
 .col-res-main {
   display: flex;
@@ -55,7 +55,7 @@
   font-size: 34px;
   line-height: 1;
   color: var(--ink);
-  text-shadow: 0 0 20px color-mix(in srgb, var(--c) 50%, transparent);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--c) 18%, transparent);
   font-variant-numeric: tabular-nums;
 }
 .col-res-copy {
@@ -94,12 +94,12 @@
   padding: 12px 14px;
   border-radius: 14px;
   border: 1px solid var(--line);
-  background: rgba(8, 14, 28, 0.55);
+  background: rgba(16, 19, 25, 0.55);
 }
 .col-stat svg {
   grid-row: 1 / 3;
   color: var(--c);
-  filter: drop-shadow(0 0 6px var(--c));
+  filter: drop-shadow(0 0 3.6px color-mix(in srgb, var(--c) 50%, transparent));
 }
 .col-stat b {
   font-family: var(--display);
@@ -148,10 +148,10 @@
   transition: background 0.2s, color 0.2s;
 }
 .col-sort-btn.on {
-  color: #03140f;
+  color: #0f1d17;
   background: var(--bio);
   font-weight: 700;
-  box-shadow: 0 0 14px rgba(43, 240, 192, 0.4);
+  box-shadow: 0 0 8.4px rgba(130, 198, 166, 0.2);
 }
 .col-filters {
   margin-bottom: 14px;
@@ -170,7 +170,7 @@
 .col-filter.on {
   background: color-mix(in srgb, var(--c) 18%, transparent);
   border-color: var(--c);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--c) 35%, transparent);
+  box-shadow: 0 0 8.4px color-mix(in srgb, var(--c) 18%, transparent);
 }
 .col-filter.on small {
   color: var(--ink);
@@ -212,8 +212,8 @@
 }
 .col-ach-item.done {
   opacity: 1;
-  border-color: rgba(255, 209, 102, 0.4);
-  background: linear-gradient(90deg, rgba(255, 209, 102, 0.1), transparent 60%), rgba(0, 0, 0, 0.2);
+  border-color: rgba(220, 182, 104, 0.4);
+  background: linear-gradient(90deg, rgba(220, 182, 104, 0.1), transparent 60%), rgba(0, 0, 0, 0.2);
 }
 .col-ach-icon {
   display: grid;
@@ -227,8 +227,8 @@
 }
 .col-ach-item.done .col-ach-icon {
   color: var(--dxp);
-  border-color: rgba(255, 209, 102, 0.5);
-  box-shadow: 0 0 16px rgba(255, 209, 102, 0.35);
+  border-color: rgba(220, 182, 104, 0.5);
+  box-shadow: 0 0 9.6px rgba(220, 182, 104, 0.175);
 }
 .col-ach-body {
   display: flex;
@@ -320,8 +320,8 @@
 .col-mut.seen .col-mut-glyph {
   color: var(--c);
   border-color: color-mix(in srgb, var(--c) 60%, transparent);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--c) 45%, transparent);
-  text-shadow: 0 0 8px var(--c);
+  box-shadow: 0 0 8.4px color-mix(in srgb, var(--c) 22%, transparent);
+  text-shadow: 0 0 4.8px color-mix(in srgb, var(--c) 35%, transparent);
 }
 .col-mut-body {
   display: flex;

@@ -49,7 +49,7 @@
   border: 0;
   padding: 0;
   cursor: pointer;
-  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--el) 35%, transparent));
+  filter: drop-shadow(0 0 13.2px color-mix(in srgb, var(--el) 18%, transparent));
 }
 .home-creature:focus-visible {
   outline: 2px solid var(--el);
@@ -77,15 +77,15 @@
 .home-ring.r1 {
   width: 100%;
   height: 100%;
-  background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--el) 40%, transparent), rgba(6, 14, 30, 0.9) 62%, transparent 72%);
+  background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--el) 40%, transparent), rgba(15, 19, 26, 0.9) 62%, transparent 72%);
   border: 1px solid color-mix(in srgb, var(--el) 40%, transparent);
-  box-shadow: 0 0 40px color-mix(in srgb, var(--el) 35%, transparent), inset 0 0 30px color-mix(in srgb, var(--el) 30%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--el) 18%, transparent), inset 0 0 18px color-mix(in srgb, var(--el) 15%, transparent);
 }
 .home-ring.r2 {
   width: 78%;
   height: 70%;
   border: 2px solid color-mix(in srgb, var(--el) 80%, white 10%);
-  box-shadow: 0 0 18px var(--el), inset 0 0 14px color-mix(in srgb, var(--el) 60%, transparent);
+  box-shadow: 0 0 10.8px color-mix(in srgb, var(--el) 50%, transparent), inset 0 0 8.4px color-mix(in srgb, var(--el) 30%, transparent);
   animation: home-ring-pulse 3.2s ease-in-out infinite;
 }
 .home-ring.r3 {
@@ -135,7 +135,7 @@
   z-index: 3;
   border-radius: 50%;
   background: radial-gradient(circle, #fff, var(--el) 55%, transparent 70%);
-  box-shadow: 0 0 10px var(--el);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--el) 50%, transparent);
   opacity: 0;
   pointer-events: none;
   animation: home-spore 10s ease-in-out infinite;
@@ -171,7 +171,7 @@
   background-clip: text;
   color: transparent;
   text-shadow: none;
-  filter: drop-shadow(0 0 24px color-mix(in srgb, var(--el) 30%, transparent));
+  filter: drop-shadow(0 0 14.4px color-mix(in srgb, var(--el) 15%, transparent));
 }
 .home-badges {
   display: flex;
@@ -212,7 +212,7 @@
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--dxp), var(--shard));
-  box-shadow: 0 0 14px rgba(255, 209, 102, 0.5);
+  box-shadow: 0 0 8.4px rgba(220, 182, 104, 0.25);
 }
 .home-evolve {
   align-self: flex-start;
@@ -221,17 +221,17 @@
 @keyframes home-evolve {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(217, 139, 255, 0.55), 0 8px 30px rgba(217, 139, 255, 0.35);
+    box-shadow: 0 0 0 0 rgba(182, 161, 214, 0.55), 0 8px 30px rgba(182, 161, 214, 0.35);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(217, 139, 255, 0), 0 8px 40px rgba(217, 139, 255, 0.6);
+    box-shadow: 0 0 0 10px rgba(182, 161, 214, 0), 0 8px 40px rgba(182, 161, 214, 0.6);
   }
 }
 .home-tend {
   max-width: 420px;
   padding: 12px 14px;
   border-radius: var(--radius-sm);
-  background: rgba(4, 10, 22, 0.45);
+  background: rgba(11, 14, 20, 0.45);
   border: 1px solid var(--line);
 }
 
@@ -252,7 +252,7 @@
   border-radius: 999px;
   border: 0;
   cursor: pointer;
-  color: #03140f;
+  color: #0f1d17;
   background: linear-gradient(180deg, color-mix(in srgb, var(--c) 85%, white 15%), color-mix(in srgb, var(--c) 72%, black 28%));
   box-shadow: 0 12px 50px color-mix(in srgb, var(--c) 45%, transparent), inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 0 rgba(0, 0, 0, 0.2);
   max-width: 100%;
@@ -326,14 +326,14 @@
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid var(--line);
-  background: rgba(8, 14, 28, 0.5);
+  background: rgba(16, 19, 25, 0.5);
   opacity: 0.65;
   transition: opacity 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .home-step.next {
   opacity: 1;
   border-color: color-mix(in srgb, var(--c) 60%, transparent);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--c) 25%, transparent);
+  box-shadow: 0 0 14.4px color-mix(in srgb, var(--c) 12%, transparent);
 }
 .home-step-icon {
   display: grid;
@@ -373,9 +373,9 @@
   text-transform: uppercase;
   padding: 2px 8px;
   border-radius: 999px;
-  color: #03140f;
+  color: #0f1d17;
   background: var(--c);
-  box-shadow: 0 0 12px var(--c);
+  box-shadow: 0 0 7.2px color-mix(in srgb, var(--c) 50%, transparent);
 }
 .home-step-arrow {
   position: absolute;
@@ -427,7 +427,7 @@
   width: 104px;
   height: 104px;
   flex: none;
-  filter: drop-shadow(0 0 10px rgba(43, 240, 192, 0.35));
+  filter: drop-shadow(0 0 6px rgba(130, 198, 166, 0.175));
 }
 .home-disc-num {
   display: flex;
@@ -479,7 +479,7 @@
   height: 130px;
 }
 .home-daily:not(.claimed) .home-daily-svg {
-  filter: drop-shadow(0 0 12px rgba(255, 79, 216, 0.45));
+  filter: drop-shadow(0 0 7.2px rgba(212, 138, 176, 0.225));
   animation: home-daily-hover 3s ease-in-out infinite;
 }
 @keyframes home-daily-hover {
@@ -496,8 +496,8 @@
   font-family: var(--display);
   font-weight: 900;
   font-size: 46px;
-  color: #ff4fd8;
-  text-shadow: 0 0 18px #ff4fd8;
+  color: #d48ab0;
+  text-shadow: 0 0 10.8px color-mix(in srgb, #d48ab0 35%, transparent);
   pointer-events: none;
   animation: home-glow 2.4s ease-in-out infinite;
 }

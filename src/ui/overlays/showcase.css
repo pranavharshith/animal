@@ -29,10 +29,9 @@
   border-radius: 5.4cqw;
   border: 0.75cqw solid transparent;
   background:
-    linear-gradient(#05070f, #05070f) padding-box,
+    linear-gradient(#121619, #121619) padding-box,
     var(--frame) border-box;
-  box-shadow:
-    0 0 32px color-mix(in srgb, var(--el) 40%, transparent),
+  box-shadow:0 0 19.2px color-mix(in srgb, var(--el) 20%, transparent),
     0 30px 60px rgba(0, 0, 0, 0.55);
   transform: rotateX(var(--rx)) rotateY(var(--ry));
   transform-style: preserve-3d;
@@ -45,9 +44,7 @@
   transition: transform 0.08s linear;
 }
 .show-card.rarity-anomaly {
-  box-shadow:
-    0 0 36px rgba(255, 79, 216, 0.45),
-    0 0 70px rgba(79, 216, 255, 0.2),
+  box-shadow:0 0 21.6px rgba(212, 138, 176, 0.225),0 0 42px rgba(111, 176, 200, 0.1),
     0 30px 60px rgba(0, 0, 0, 0.55);
 }
 
@@ -56,10 +53,10 @@
   inset: 0;
   border-radius: 4.7cqw;
   overflow: hidden;
-  color: #e8f1ff;
+  color: #ece6da;
   background:
     radial-gradient(70% 40% at 50% -6%, color-mix(in srgb, var(--el2) 28%, transparent), transparent 70%),
-    linear-gradient(165deg, var(--eldark) 0%, #070a16 45%, var(--eldark) 78%, color-mix(in srgb, var(--el) 35%, #05070f) 100%);
+    linear-gradient(165deg, var(--eldark) 0%, #0d0f14 45%, var(--eldark) 78%, color-mix(in srgb, var(--el) 35%, #121619) 100%);
 }
 .show-card-inner::before {
   /* thin inner frame line */
@@ -103,7 +100,7 @@
   font-size: 4.6cqw;
   letter-spacing: 1.4cqw;
   margin-right: -1.4cqw;
-  text-shadow: 0 0 2.2cqw color-mix(in srgb, var(--el) 80%, transparent);
+  text-shadow: 0 0 1.3cqw color-mix(in srgb, var(--el) 28%, transparent);
 }
 .show-head span {
   font-size: 1.9cqw;
@@ -147,7 +144,7 @@
   width: 83%;
   aspect-ratio: 1;
   transform: translate(-50%, -48%);
-  filter: drop-shadow(0 0 3cqw color-mix(in srgb, var(--el) 50%, transparent));
+  filter: drop-shadow(0 0 1.8cqw color-mix(in srgb, var(--el) 25%, transparent));
   z-index: 1;
 }
 .show-art svg {
@@ -216,7 +213,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 0 2.8cqw color-mix(in srgb, var(--rar) 60%, transparent);
+  text-shadow: 0 0 1.7cqw color-mix(in srgb, var(--rar) 21%, transparent);
   z-index: 2;
 }
 
@@ -248,8 +245,8 @@
   width: 89.6%;
   height: 12.5%;
   border-radius: 2.8cqw;
-  border: 1px solid rgba(160, 200, 255, 0.14);
-  background: rgba(8, 14, 30, 0.6);
+  border: 1px solid rgba(236, 228, 210, 0.14);
+  background: rgba(16, 19, 26, 0.6);
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   padding: 1.6cqw 3cqw;
@@ -267,7 +264,7 @@
   gap: 1.2cqw;
   font-size: 1.75cqw;
   font-weight: 700;
-  color: #a9b8d6;
+  color: #b3ad9f;
 }
 .show-stat i {
   display: block;
@@ -283,7 +280,7 @@
 }
 .show-stat em {
   font-style: normal;
-  color: #e8f1ff;
+  color: #ece6da;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -291,7 +288,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.2cqw;
-  border-left: 1px solid rgba(160, 200, 255, 0.14);
+  border-left: 1px solid rgba(236, 228, 210, 0.14);
   padding-left: 2.8cqw;
   min-width: 0;
 }
@@ -299,7 +296,7 @@
   font-size: 1.5cqw;
   font-weight: 600;
   letter-spacing: 0.35cqw;
-  color: #6c7a99;
+  color: #807b70;
 }
 .show-mut {
   display: flex;
@@ -317,10 +314,10 @@
   height: 1.2cqw;
   border-radius: 50%;
   background: var(--el);
-  box-shadow: 0 0 1cqw var(--el);
+  box-shadow: 0 0 1cqw color-mix(in srgb, var(--el) 50%, transparent);
 }
 .show-mut.none {
-  color: #6c7a99;
+  color: #807b70;
   font-weight: 500;
   font-size: 2cqw;
 }
@@ -332,8 +329,8 @@
   width: 89.6%;
   height: 7.3%;
   border-radius: 2.4cqw;
-  background: rgba(232, 241, 255, 0.92);
-  color: #0a1020;
+  background: rgba(236, 230, 218, 0.92);
+  color: #192026;
   padding: 1.3cqw 2.6cqw 1cqw;
   display: flex;
   flex-direction: column;
@@ -343,7 +340,7 @@
 .show-strip svg {
   width: 100%;
   height: 45%;
-  fill: #0a1020;
+  fill: #192026;
   display: block;
 }
 .show-strip code {
@@ -372,8 +369,8 @@
       115deg,
       transparent 20%,
       color-mix(in srgb, var(--el) 30%, transparent) 36%,
-      rgba(255, 79, 216, 0.22) 44%,
-      rgba(79, 216, 255, 0.24) 52%,
+      rgba(212, 138, 176, 0.22) 44%,
+      rgba(111, 176, 200, 0.24) 52%,
       color-mix(in srgb, var(--rar) 30%, transparent) 60%,
       transparent 76%
     );

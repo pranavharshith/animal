@@ -1,25 +1,25 @@
 /* WILDSHIFT global styles: bioluminescent nature x biological lab. */
 :root {
-  --bg: #05070f;
-  --bg-2: #0a1020;
-  --ink: #e8f1ff;
-  --ink-2: #a9b8d6;
-  --ink-3: #6c7a99;
-  --line: rgba(160, 200, 255, 0.12);
-  --line-2: rgba(160, 200, 255, 0.22);
-  --glass: rgba(16, 26, 48, 0.55);
-  --glass-2: rgba(22, 36, 66, 0.72);
+  --bg: #121619;
+  --bg-2: #192026;
+  --ink: #ece6da;
+  --ink-2: #b3ad9f;
+  --ink-3: #807b70;
+  --line: rgba(236, 228, 210, 0.12);
+  --line-2: rgba(236, 228, 210, 0.22);
+  --glass: rgba(26, 32, 38, 0.55);
+  --glass-2: rgba(34, 41, 48, 0.72);
   --glass-hi: rgba(255, 255, 255, 0.06);
-  --bio: #2bf0c0; /* signature bio-teal */
-  --bio-2: #7affdd;
-  --shard: #d98bff;
-  --dxp: #ffd166;
-  --danger: #ff5d7a;
+  --bio: #82c6a6; /* signature bio-teal */
+  --bio-2: #a9d9c2;
+  --shard: #b6a1d6;
+  --dxp: #dcb668;
+  --danger: #d9766e;
   --radius: 18px;
   --radius-sm: 12px;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   --font: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --display: 'Unbounded', 'Outfit', system-ui, sans-serif;
+  --display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --nav-h: 68px;
   --top-h: 64px;
   color-scheme: dark;
@@ -70,7 +70,7 @@ h4 {
 }
 
 ::selection {
-  background: rgba(43, 240, 192, 0.35);
+  background: rgba(130, 198, 166, 0.35);
 }
 
 ::-webkit-scrollbar {
@@ -78,7 +78,7 @@ h4 {
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(160, 200, 255, 0.18);
+  background: rgba(236, 228, 210, 0.18);
   border-radius: 8px;
 }
 ::-webkit-scrollbar-track {
@@ -140,7 +140,7 @@ h4 {
 }
 .btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--c) 45%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 14.4px color-mix(in srgb, var(--c) 22%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .btn:active:not(:disabled) {
   transform: translateY(1px) scale(0.98);
@@ -155,7 +155,7 @@ h4 {
 }
 .btn-primary {
   background: linear-gradient(180deg, color-mix(in srgb, var(--c) 95%, white 5%), color-mix(in srgb, var(--c) 70%, black 30%));
-  color: #03140f;
+  color: #0f1d17;
   border-color: transparent;
   box-shadow: 0 8px 30px color-mix(in srgb, var(--c) 35%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
@@ -217,7 +217,7 @@ h4 {
 }
 .input:focus {
   border-color: var(--bio);
-  box-shadow: 0 0 0 3px rgba(43, 240, 192, 0.15);
+  box-shadow: 0 0 0 3px rgba(130, 198, 166, 0.15);
 }
 
 .reduced-motion *,

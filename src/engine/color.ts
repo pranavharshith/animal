@@ -43,3 +43,22 @@ export function displayColors(g: Pick<Genome, 'primary' | 'secondary' | 'accent'
   const h = harmonize(raw);
   return { primary: mix(raw.primary, h.primary, strength), secondary: mix(raw.secondary, h.secondary, strength), accent: mix(raw.accent, h.accent, strength) };
 }
+
+/**
+ * Draw-time "painterly" softening: calmer, earthier saturation so organisms sit in the
+ * muted dusk palette instead of glowing like neon. Purely visual (stored genomes and share
+ * codes are untouched). Callers skip anomalies so their impossible palettes stay intact.
+ */
+/** Greens and magentas read far more intense than other hues at the same HSL saturation. */
+function satCap(h: number, base: number): number {
+  const near = (c: number, w: number) => Math.max(0, 1 - Math.abs(hueDelta(h, c)) / w);
+  return base - 12 * near(120, 55) - 8 * near(305, 35);
+}
+
+export function painterly({ primary, secondary, accent }: Trio): Trio {
+  return {
+    primary: { h: primary.h, s: Math.min(primary.s * 0.8, satCap(primary.h, 52)), l: clamp(primary.l, 38, 60) },
+    secondary: { h: secondary.h, s: Math.min(secondary.s * 0.8, satCap(secondary.h, 50)), l: secondary.l },
+    accent: { h: accent.h, s: clamp(accent.s * 0.72, 40, satCap(accent.h, 66)), l: clamp(accent.l, 60, 70) },
+  };
+}

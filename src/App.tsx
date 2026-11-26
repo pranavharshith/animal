@@ -98,9 +98,9 @@ export default function App() {
               <svg viewBox="0 0 32 32" width="30" height="30">
                 <defs>
                   <radialGradient id="bm" cx="40%" cy="35%" r="70%">
-                    <stop offset="0" stopColor="#b6fff0" />
-                    <stop offset="0.6" stopColor="#2bf0c0" />
-                    <stop offset="1" stopColor="#0a5a6a" />
+                    <stop offset="0" stopColor="#cfe8db" />
+                    <stop offset="0.6" stopColor="#82c6a6" />
+                    <stop offset="1" stopColor="#34565f" />
                   </radialGradient>
                 </defs>
                 <path d="M6 20c0-7 4.5-12 10-12s10 5 10 12c0 3-2 5-5 5H11c-3 0-5-2-5-5z" fill="url(#bm)" />

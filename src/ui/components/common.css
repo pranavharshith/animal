@@ -15,7 +15,7 @@
 }
 .stage-pips i.on {
   background: var(--bio);
-  box-shadow: 0 0 6px var(--bio);
+  box-shadow: 0 0 3.6px color-mix(in srgb, var(--bio) 50%, transparent);
 }
 
 /* Creature tile */
@@ -28,7 +28,7 @@
   padding: 8px 8px 10px;
   border-radius: 16px;
   border: 1px solid var(--line);
-  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--el) 16%, transparent), transparent 70%), rgba(12, 20, 38, 0.7);
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--el) 16%, transparent), transparent 70%), rgba(21, 25, 33, 0.7);
   cursor: pointer;
   transition: transform 0.18s ease, border-color 0.2s, box-shadow 0.2s;
   text-align: left;
@@ -40,7 +40,7 @@
 }
 .creature-tile.selected {
   border-color: var(--el);
-  box-shadow: 0 0 0 1px var(--el), 0 0 28px color-mix(in srgb, var(--el) 40%, transparent);
+  box-shadow: 0 0 0 1px var(--el), 0 0 16.8px color-mix(in srgb, var(--el) 20%, transparent);
 }
 .creature-tile:disabled {
   opacity: 0.35;
@@ -50,7 +50,7 @@
   /* Element atmosphere: a deeper, element-tinted glow inside every card. */
   background:
     radial-gradient(ellipse 80% 60% at 50% 42%, color-mix(in srgb, var(--el) 22%, transparent), transparent 72%),
-    linear-gradient(180deg, color-mix(in srgb, var(--el) 7%, rgba(12, 20, 38, 0.82)), rgba(8, 13, 26, 0.88));
+    linear-gradient(180deg, color-mix(in srgb, var(--el) 7%, rgba(21, 25, 33, 0.82)), rgba(15, 18, 24, 0.88));
   overflow: hidden;
   isolation: isolate;
 }
@@ -88,11 +88,11 @@
 
 /* Rarity prestige */
 .creature-tile.rarity-unusual {
-  box-shadow: inset 0 0 18px rgba(109, 255, 158, 0.08);
+  box-shadow: inset 0 0 10.8px rgba(156, 196, 138, 0.04);
 }
 .creature-tile.rarity-rare {
-  border-color: rgba(94, 200, 255, 0.35);
-  box-shadow: inset 0 0 22px rgba(94, 200, 255, 0.12), 0 0 14px rgba(94, 200, 255, 0.1);
+  border-color: rgba(127, 177, 208, 0.35);
+  box-shadow: inset 0 0 13.2px rgba(127, 177, 208, 0.06), 0 0 8.4px rgba(127, 177, 208, 0.05);
 }
 .creature-tile.rarity-exotic,
 .creature-tile.rarity-anomaly {
@@ -106,7 +106,7 @@
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  background: linear-gradient(120deg, #d58cff, #5ec8ff, #7affdd, #ffd166, #d58cff);
+  background: linear-gradient(120deg, #b6a1d6, #7fb1d0, #a9d9c2, #dcb668, #b6a1d6);
   background-size: 300% 300%;
   animation: tile-shimmer 6s linear infinite;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -116,14 +116,14 @@
   z-index: 3;
 }
 .creature-tile.rarity-anomaly::before {
-  background: linear-gradient(120deg, #ff4fd8, #4fd8ff, #d8ff4f, #ff8a4f, #ff4fd8);
+  background: linear-gradient(120deg, #d48ab0, #6fb0c8, #ccd07a, #e09c7c, #d48ab0);
   background-size: 300% 300%;
   animation-duration: 3.5s;
 }
 .creature-tile.rarity-anomaly {
   background:
-    radial-gradient(ellipse 80% 60% at 50% 42%, rgba(255, 79, 216, 0.24), transparent 72%),
-    linear-gradient(180deg, rgba(30, 10, 40, 0.85), rgba(8, 13, 26, 0.9));
+    radial-gradient(ellipse 80% 60% at 50% 42%, rgba(212, 138, 176, 0.24), transparent 72%),
+    linear-gradient(180deg, rgba(30, 21, 34, 0.85), rgba(15, 18, 24, 0.9));
 }
 @keyframes tile-shimmer {
   0% { background-position: 0% 50%; }
@@ -142,14 +142,14 @@
   height: 4px;
   border-radius: 50%;
   background: var(--el);
-  box-shadow: 0 0 8px var(--el);
+  box-shadow: 0 0 4.8px color-mix(in srgb, var(--el) 50%, transparent);
   opacity: 0;
   animation: tile-mote 5.5s ease-in-out infinite;
 }
 .tile-motes i:nth-child(1) { left: 22%; animation-delay: -0.5s; }
 .tile-motes i:nth-child(2) { left: 58%; animation-delay: -2.4s; width: 3px; height: 3px; }
 .tile-motes i:nth-child(3) { left: 78%; animation-delay: -4.1s; }
-.creature-tile.rarity-anomaly .tile-motes i { background: #ff4fd8; box-shadow: 0 0 8px #ff4fd8; }
+.creature-tile.rarity-anomaly .tile-motes i { background: #d48ab0; box-shadow: 0 0 4.8px color-mix(in srgb, #d48ab0 50%, transparent); }
 @keyframes tile-mote {
   0% { transform: translateY(0); opacity: 0; }
   25% { opacity: 0.9; }

@@ -6,7 +6,7 @@
 }
 .sanc-count {
   color: var(--bio-2);
-  border-color: rgba(43, 240, 192, 0.35);
+  border-color: rgba(130, 198, 166, 0.35);
 }
 
 .sanc-habitat {
@@ -16,12 +16,12 @@
   border-radius: 28px;
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid rgba(122, 255, 221, 0.18);
+  border: 1px solid rgba(169, 217, 194, 0.18);
   background:
-    radial-gradient(ellipse 60% 50% at 30% 20%, rgba(43, 240, 192, 0.16), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 78% 28%, rgba(199, 125, 255, 0.14), transparent 70%),
-    linear-gradient(180deg, #020a10 0%, #04161a 45%, #031410 60%, #020806 100%);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(43, 240, 192, 0.08);
+    radial-gradient(ellipse 60% 50% at 30% 20%, rgba(130, 198, 166, 0.16), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 78% 28%, rgba(168, 141, 200, 0.14), transparent 70%),
+    linear-gradient(180deg, #020a10 0%, #11191b 45%, #0f1615 60%, #020806 100%);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 36px rgba(130, 198, 166, 0.04);
 }
 
 /* Flora */
@@ -40,7 +40,7 @@
   height: 62%;
   width: 26%;
   z-index: 80;
-  filter: drop-shadow(0 0 12px rgba(43, 240, 192, 0.15));
+  filter: drop-shadow(0 0 7.2px rgba(130, 198, 166, 0.075));
 }
 .sanc-flora.left {
   left: -1%;
@@ -93,7 +93,7 @@
   right: 0;
   top: 0;
   height: 30%;
-  background: linear-gradient(180deg, rgba(43, 240, 192, 0.16), transparent);
+  background: linear-gradient(180deg, rgba(130, 198, 166, 0.16), transparent);
   z-index: 1;
 }
 .sanc-floor-plane {
@@ -105,12 +105,12 @@
   transform-origin: 50% 0;
   transform: rotateX(64deg);
   background:
-    radial-gradient(ellipse 18% 10% at 30% 22%, rgba(125, 255, 138, 0.18), transparent 70%),
-    radial-gradient(ellipse 16% 8% at 66% 34%, rgba(61, 214, 255, 0.16), transparent 70%),
-    radial-gradient(ellipse 22% 12% at 50% 12%, rgba(199, 125, 255, 0.12), transparent 70%),
-    repeating-linear-gradient(90deg, rgba(122, 255, 221, 0.07) 0 1px, transparent 1px 64px),
-    repeating-linear-gradient(0deg, rgba(122, 255, 221, 0.07) 0 1px, transparent 1px 64px),
-    linear-gradient(180deg, #06261c, #031510 60%, #020a08);
+    radial-gradient(ellipse 18% 10% at 30% 22%, rgba(156, 196, 138, 0.18), transparent 70%),
+    radial-gradient(ellipse 16% 8% at 66% 34%, rgba(111, 176, 200, 0.16), transparent 70%),
+    radial-gradient(ellipse 22% 12% at 50% 12%, rgba(168, 141, 200, 0.12), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(169, 217, 194, 0.07) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg, rgba(169, 217, 194, 0.07) 0 1px, transparent 1px 64px),
+    linear-gradient(180deg, #1b2823, #101715 60%, #020a08);
 }
 
 /* Creatures */
@@ -248,7 +248,7 @@
 }
 .sanc-body:hover .sanc-bob,
 .sanc-body:focus-visible .sanc-bob {
-  filter: drop-shadow(0 0 14px var(--el));
+  filter: drop-shadow(0 0 8.4px color-mix(in srgb, var(--el) 50%, transparent));
 }
 .sanc-shadow {
   position: absolute;
@@ -281,9 +281,9 @@
   font-weight: 700;
   white-space: nowrap;
   color: var(--ink);
-  background: rgba(4, 10, 20, 0.8);
+  background: rgba(11, 14, 19, 0.8);
   border: 1px solid color-mix(in srgb, var(--el) 55%, transparent);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--el) 35%, transparent);
+  box-shadow: 0 0 8.4px color-mix(in srgb, var(--el) 18%, transparent);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s, transform 0.2s;
@@ -307,8 +307,8 @@
 .sanc-spores i {
   position: absolute;
   border-radius: 50%;
-  background: #b6fff0;
-  box-shadow: 0 0 8px #2bf0c0, 0 0 2px #fff;
+  background: #cfe8db;
+  box-shadow: 0 0 4.8px color-mix(in srgb, #82c6a6 50%, transparent), 0 0 1.2px color-mix(in srgb, #fff 50%, transparent);
   opacity: 0;
   animation: sanc-spore 14s ease-in-out infinite;
 }
@@ -339,7 +339,7 @@
   background:
     linear-gradient(112deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 16%, transparent 22%, transparent 68%, rgba(255, 255, 255, 0.05) 72%, transparent 76%),
     linear-gradient(0deg, rgba(2, 8, 6, 0.4), transparent 18%);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 0 90px rgba(43, 240, 192, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 0 54px rgba(130, 198, 166, 0.05), inset 0 2px 0 rgba(255, 255, 255, 0.08);
 }
 
 .sanc-empty {
@@ -376,7 +376,7 @@
   height: 30px;
   border-radius: 50%;
   color: var(--ink-3);
-  background: rgba(4, 10, 20, 0.75);
+  background: rgba(11, 14, 19, 0.75);
   border: 1px solid var(--line-2);
   cursor: pointer;
   transition: color 0.2s, transform 0.15s, box-shadow 0.2s;
@@ -387,8 +387,8 @@
 }
 .sanc-star.on {
   color: var(--dxp);
-  border-color: rgba(255, 209, 102, 0.6);
-  box-shadow: 0 0 14px rgba(255, 209, 102, 0.45);
+  border-color: rgba(220, 182, 104, 0.6);
+  box-shadow: 0 0 8.4px rgba(220, 182, 104, 0.225);
 }
 .sanc-star:focus-visible {
   outline: 2px solid var(--dxp);

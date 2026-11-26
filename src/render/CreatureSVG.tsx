@@ -1,6 +1,6 @@
 // Procedural creature renderer. Pure SVG, deterministic from the genome.
 import { memo, useId, useMemo, type CSSProperties, type ReactNode, type SVGAttributes } from 'react';
-import { displayColors } from '../engine/color';
+import { displayColors, painterly } from '../engine/color';
 import { ELEMENT_INFO, hsl } from '../engine/data';
 import { hashSeed, lerpHue, mulberry32, range, type Rng } from '../engine/rng';
 import type { Genome, Personality, Stage } from '../engine/types';
@@ -72,10 +72,11 @@ function makePalette(g: Genome, sil: boolean): Palette {
   const el = ELEMENT_INFO[g.element];
   if (sil) {
     const d = '#070a14';
-    return { body: d, bodyLight: d, bodyDark: d, far: '#05070e', outline: '#27345a', sec: d, secLight: d, secDark: d, acc: '#1b2440', accLight: '#1b2440', eyeWhite: d, iris: d, pupil: d, bone: d, el: '#3b4a78', el2: '#3b4a78', crease: 'transparent', rim: '#3b4a78' };
+    return { body: d, bodyLight: d, bodyDark: d, far: '#05070e', outline: '#2d364b', sec: d, secLight: d, secDark: d, acc: '#262a37', accLight: '#262a37', eyeWhite: d, iris: d, pupil: d, bone: d, el: '#424c66', el2: '#424c66', crease: 'transparent', rim: '#424c66' };
   }
-  // Gentle draw-time harmony (anomalies are exempt inside displayColors).
-  const { primary: p, secondary: s, accent: ac } = displayColors(g);
+  // Gentle draw-time harmony, then painterly softening. Anomalies are exempt from both.
+  const tidy = displayColors(g);
+  const { primary: p, secondary: s, accent: ac } = g.anomaly ? tidy : painterly(tidy);
   // Tinted outline: the body hue nudged toward indigo, very dark but never pure black.
   const outlineHue = lerpHue(p.h, 250, 0.38);
   const outline = hsl({ h: outlineHue, s: Math.min(55, p.s * 0.8 + 10), l: 15 + Math.max(0, p.l - 45) * 0.15 });
@@ -90,14 +91,14 @@ function makePalette(g: Genome, sil: boolean): Palette {
     secDark: hsl(s, -15),
     acc: hsl(ac),
     accLight: hsl(ac, 12),
-    eyeWhite: hsl({ h: ac.h, s: 40, l: 96 }),
-    iris: hsl({ h: ac.h, s: Math.max(78, ac.s), l: Math.min(64, ac.l) }),
+    eyeWhite: hsl({ h: lerpHue(ac.h, 45, 0.5), s: 22, l: 95 }),
+    iris: hsl({ h: ac.h, s: g.anomaly ? Math.max(78, ac.s) : Math.min(64, Math.max(48, ac.s)), l: Math.min(62, ac.l) }),
     pupil: hsl({ h: outlineHue, s: 45, l: 6 }),
     bone: hsl({ h: (p.h + 30) % 360, s: 22, l: 86 }),
     el: el.color,
     el2: el.color2,
     crease: hsl({ h: outlineHue, s: 45, l: 18 }, 0, 0, 0.38),
-    rim: hsl({ h: lerpHue(ac.h, 190, 0.3), s: 70, l: 86 }),
+    rim: hsl({ h: lerpHue(ac.h, 42, 0.4), s: 42, l: 88 }),
   };
 }
 
@@ -556,8 +557,8 @@ function BodyMutations({ x: ctx }: { x: Ctx }) {
   if (g.mutations.includes('heat_cracks')) {
     out.push(
       <g key="hc" filter={glow} clipPath={ctx.url('clip')} className={ctx.animated ? 'cr-glowpulse' : undefined}>
-        <path d={`M${f1(cx - rx * 0.7)},${f1(cy - ry * 0.1)} l8,-6 l5,8 l9,-10 l6,5 M${f1(cx)},${f1(cy + ry * 0.4)} l6,-9 l7,4 l5,-11 M${f1(cx - rx * 0.3)},${f1(cy + ry * 0.55)} l7,-4 l4,5`} stroke="#ffb347" strokeWidth={2.2} fill="none" strokeLinejoin="round" strokeLinecap="round" />
-        <path d={`M${f1(cx - rx * 0.7)},${f1(cy - ry * 0.1)} l8,-6 l5,8 l9,-10 l6,5`} stroke="#fff3c4" strokeWidth={0.8} fill="none" />
+        <path d={`M${f1(cx - rx * 0.7)},${f1(cy - ry * 0.1)} l8,-6 l5,8 l9,-10 l6,5 M${f1(cx)},${f1(cy + ry * 0.4)} l6,-9 l7,4 l5,-11 M${f1(cx - rx * 0.3)},${f1(cy + ry * 0.55)} l7,-4 l4,5`} stroke="#e3b882" strokeWidth={2.2} fill="none" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={`M${f1(cx - rx * 0.7)},${f1(cy - ry * 0.1)} l8,-6 l5,8 l9,-10 l6,5`} stroke="#e7e1c6" strokeWidth={0.8} fill="none" />
       </g>,
     );
   }
@@ -580,7 +581,7 @@ function BodyMutations({ x: ctx }: { x: Ctx }) {
           const len = 13 + (i % 2) * 6;
           const tipX = p.x + Math.cos(p.a) * len;
           const tipY = p.y + Math.sin(p.a) * len;
-          return <path key={i} d={`M${f1(p.x - 3.5)},${f1(p.y + 2)} L${f1(tipX)},${f1(tipY)} L${f1(p.x + 3.5)},${f1(p.y + 2)}Z`} fill="#d8f6ff" fillOpacity={0.75} stroke="#ffffff" strokeWidth={0.9} />;
+          return <path key={i} d={`M${f1(p.x - 3.5)},${f1(p.y + 2)} L${f1(tipX)},${f1(tipY)} L${f1(p.x + 3.5)},${f1(p.y + 2)}Z`} fill="#d1e2e7" fillOpacity={0.75} stroke="#ffffff" strokeWidth={0.9} />;
         })}
       </g>,
     );
@@ -590,10 +591,10 @@ function BodyMutations({ x: ctx }: { x: Ctx }) {
     out.push(
       <g key="sc" filter={glow}>
         {[0, 1, 2].map((k) => (
-          <ellipse key={k} cx={b.x + 4} cy={b.y - 4 - k * 6} rx={9 - k * 1.5} ry={3} fill="none" stroke="#ffd34d" strokeWidth={2} />
+          <ellipse key={k} cx={b.x + 4} cy={b.y - 4 - k * 6} rx={9 - k * 1.5} ry={3} fill="none" stroke="#e5cc8a" strokeWidth={2} />
         ))}
-        <line x1={b.x + 4} y1={b.y + 2} x2={b.x + 4} y2={b.y - 18} stroke="#b8860b" strokeWidth={2} />
-        <path className={ctx.animated ? 'cr-spark' : undefined} d={`M${f1(b.x + 4)},${f1(b.y - 20)} l-4,-6 l5,1 l-3,-7`} stroke="#fffbe0" strokeWidth={1.4} fill="none" />
+        <line x1={b.x + 4} y1={b.y + 2} x2={b.x + 4} y2={b.y - 18} stroke="#a88b58" strokeWidth={2} />
+        <path className={ctx.animated ? 'cr-spark' : undefined} d={`M${f1(b.x + 4)},${f1(b.y - 20)} l-4,-6 l5,1 l-3,-7`} stroke="#e8e6d7" strokeWidth={1.4} fill="none" />
       </g>,
     );
   }
@@ -638,7 +639,7 @@ function Head({ x: ctx }: { x: Ctx }) {
     behind.push(
       <g key="mane">
         {[-120, -85, -50, -15, 20, 55].map((rot, i) => (
-          <ellipse key={i} cx={hx - r * 0.2} cy={hy - r * 1.25} rx={r * 0.32} ry={r * 0.75} transform={`rotate(${rot} ${f1(hx - r * 0.2)} ${f1(hy)})`} fill={i % 2 ? '#5fd46a' : '#9be86b'} stroke={ctx.sil ? c.outline : '#1f5a2a'} strokeWidth={1.3} />
+          <ellipse key={i} cx={hx - r * 0.2} cy={hy - r * 1.25} rx={r * 0.32} ry={r * 0.75} transform={`rotate(${rot} ${f1(hx - r * 0.2)} ${f1(hy)})`} fill={i % 2 ? '#8bc98e' : '#abd793'} stroke={ctx.sil ? c.outline : '#36553a'} strokeWidth={1.3} />
         ))}
       </g>,
     );
@@ -646,7 +647,7 @@ function Head({ x: ctx }: { x: Ctx }) {
   if (g.mutations.includes('abyssal_fins') && !ctx.sil) {
     behind.push(
       <g key="afin" filter={glow} opacity={0.85}>
-        <path d={`M${f1(hx - r * 0.4)},${f1(hy - r * 0.2)} q-${f1(r * 1.2)},-${f1(r * 0.9)} -${f1(r * 1.5)},${f1(r * 0.1)} q${f1(r * 0.8)},0 ${f1(r * 1.5)},${f1(r * 0.5)}Z`} fill="#7fe8ff" fillOpacity={0.45} stroke="#bff6ff" strokeWidth={1.1} />
+        <path d={`M${f1(hx - r * 0.4)},${f1(hy - r * 0.2)} q-${f1(r * 1.2)},-${f1(r * 0.9)} -${f1(r * 1.5)},${f1(r * 0.1)} q${f1(r * 0.8)},0 ${f1(r * 1.5)},${f1(r * 0.5)}Z`} fill="#a0d8e4" fillOpacity={0.45} stroke="#c3e2e7" strokeWidth={1.1} />
       </g>,
     );
   }
@@ -777,7 +778,7 @@ function almond(cx: number, cy: number, r: number) {
 
 function Eye({ x: ctx, cx, cy, r, brow }: { x: Ctx; cx: number; cy: number; r: number; brow?: boolean }) {
   const { c } = ctx;
-  if (ctx.sil) return <circle cx={cx} cy={cy} r={r * 0.5} fill="#2b3a66" opacity={0.6} />;
+  if (ctx.sil) return <circle cx={cx} cy={cy} r={r * 0.5} fill="#323c55" opacity={0.6} />;
   const style = eyeStyle(ctx);
   const specular = (
     <>
@@ -852,7 +853,7 @@ function Eyes({ x: ctx }: { x: Ctx }) {
   if (g.head === 'visor') {
     eyes = (
       <g>
-        <path d={`M${f1(ex - r * 0.7)},${f1(ey - r * 0.3)} Q${f1(ex + r * 0.2)},${f1(ey - r * 0.5)} ${f1(ex + r * 0.75)},${f1(ey - r * 0.2)} L${f1(ex + r * 0.7)},${f1(ey + r * 0.28)} Q${f1(ex + r * 0.1)},${f1(ey + r * 0.15)} ${f1(ex - r * 0.65)},${f1(ey + r * 0.25)}Z`} fill={ctx.sil ? c.body : '#0b1020'} stroke={c.outline} strokeWidth={1.6} />
+        <path d={`M${f1(ex - r * 0.7)},${f1(ey - r * 0.3)} Q${f1(ex + r * 0.2)},${f1(ey - r * 0.5)} ${f1(ex + r * 0.75)},${f1(ey - r * 0.2)} L${f1(ex + r * 0.7)},${f1(ey + r * 0.28)} Q${f1(ex + r * 0.1)},${f1(ey + r * 0.15)} ${f1(ex - r * 0.65)},${f1(ey + r * 0.25)}Z`} fill={ctx.sil ? c.body : '#13151d'} stroke={c.outline} strokeWidth={1.6} />
         {!ctx.sil && <path d={`M${f1(ex - r * 0.45)},${f1(ey)} L${f1(ex + r * 0.55)},${f1(ey - r * 0.05)}`} stroke={c.el} strokeWidth={2.6} strokeLinecap="round" filter={glow} className={ctx.animated ? 'cr-glowpulse' : undefined} />}
         {!ctx.sil && <path d={`M${f1(ex - r * 0.5)},${f1(ey - r * 0.22)} Q${f1(ex)},${f1(ey - r * 0.36)} ${f1(ex + r * 0.4)},${f1(ey - r * 0.25)}`} stroke="#fff" strokeWidth={1} opacity={0.4} fill="none" />}
       </g>
@@ -952,7 +953,7 @@ function Mouth({ x: ctx }: { x: Ctx }) {
     case 'grin':
       return (
         <g>
-          <path d={`M${f1(mx - w * 0.7)},${f1(my - w * 0.1)} Q${f1(mx)},${f1(my + w * 0.75)} ${f1(mx + w * 0.6)},${f1(my - w * 0.25)} Q${f1(mx)},${f1(my + w * 0.2)} ${f1(mx - w * 0.7)},${f1(my - w * 0.1)}Z`} fill="#3a0f24" stroke={c.outline} strokeWidth={1.6} />
+          <path d={`M${f1(mx - w * 0.7)},${f1(my - w * 0.1)} Q${f1(mx)},${f1(my + w * 0.75)} ${f1(mx + w * 0.6)},${f1(my - w * 0.25)} Q${f1(mx)},${f1(my + w * 0.2)} ${f1(mx - w * 0.7)},${f1(my - w * 0.1)}Z`} fill="#331f27" stroke={c.outline} strokeWidth={1.6} />
           <path d={`M${f1(mx - w * 0.5)},${f1(my + w * 0.05)} Q${f1(mx)},${f1(my + w * 0.3)} ${f1(mx + w * 0.45)},${f1(my - w * 0.1)}`} stroke="#fff" strokeWidth={1.4} strokeDasharray="2 1.5" fill="none" />
         </g>
       );
@@ -1188,10 +1189,10 @@ function CreatureSVGInner({ genome: g, stage = 1, size = 200, animated = true, l
           <stop offset="100%" stopColor={el.color} stopOpacity={0} />
         </radialGradient>
         <linearGradient id={ctx.id('anomaly')} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ff4fd8" />
-          <stop offset="35%" stopColor="#4fd8ff" />
-          <stop offset="70%" stopColor="#d8ff4f" />
-          <stop offset="100%" stopColor="#ff4fd8" />
+          <stop offset="0%" stopColor="#d48ab0" />
+          <stop offset="35%" stopColor="#6fb0c8" />
+          <stop offset="70%" stopColor="#ccd07a" />
+          <stop offset="100%" stopColor="#d48ab0" />
         </linearGradient>
         <clipPath id={ctx.id('clip')}>
           {a.shapes.map((s, i) => (

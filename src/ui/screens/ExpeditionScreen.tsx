@@ -145,7 +145,7 @@ export default function ExpeditionScreen() {
  * ==================================================================== */
 
 const STAT_MAX = { vigor: 160, power: 40, guard: 16, speed: 26, focus: 30 };
-const STAT_COLOR = { vigor: '#7dff8a', power: '#ff7a3d', guard: '#5da9ff', speed: '#5dffb4', focus: '#d98bff' };
+const STAT_COLOR = { vigor: '#9cc48a', power: '#df8a5e', guard: '#7ea4cf', speed: '#86c4a0', focus: '#b6a1d6' };
 const STAT_LABEL = { vigor: 'Vigor', power: 'Power', guard: 'Guard', speed: 'Speed', focus: 'Focus' };
 
 function advantage(c: Creature, env: EnvironmentId): 'strong' | 'risky' | 'neutral' {
@@ -586,7 +586,7 @@ function Battle({ run, reducedMotion, onEnd }: { run: Run; reducedMotion: boolea
             anim(enemyRef.current, [{ transform: 'translateX(0)' }, { transform: 'translateX(-42%)' }, { transform: 'translateX(0)' }], 300);
             if (ev.dodged) {
               floater('player', ev.perfect ? 'PERFECT!' : 'DODGE!', ev.perfect ? 'perfect' : 'dodge');
-              if (ev.perfect) burst('player', '#7affdd');
+              if (ev.perfect) burst('player', '#a9d9c2');
             } else {
               play('hit');
               anim(playerRef.current, [{ transform: 'translateX(0)' }, { transform: 'translateX(-10%)' }, { transform: 'translateX(0)' }], 300, 120);
@@ -809,8 +809,8 @@ function Battle({ run, reducedMotion, onEnd }: { run: Run; reducedMotion: boolea
       </div>
 
       <div className="exp-commands">
-        <CommandButton label="Attack" icon={<Swords size={26} />} keys={['A', 'J']} color="#ff7a5d" cd={p.attackCd} cdMax={p.attackCdMax} disabled={!fighting} onPress={() => send('attack')} />
-        <CommandButton label="Dodge" icon={<Wind size={26} />} keys={['D', 'Space']} color="#5dffb4" cd={p.dodgeCd} cdMax={p.dodgeCdMax} disabled={!fighting} hot={winding} onPress={() => send('dodge')} />
+        <CommandButton label="Attack" icon={<Swords size={26} />} keys={['A', 'J']} color="#d98466" cd={p.attackCd} cdMax={p.attackCdMax} disabled={!fighting} onPress={() => send('attack')} />
+        <CommandButton label="Dodge" icon={<Wind size={26} />} keys={['D', 'Space']} color="#86c4a0" cd={p.dodgeCd} cdMax={p.dodgeCdMax} disabled={!fighting} hot={winding} onPress={() => send('dodge')} />
         <CommandButton
           label="Special"
           icon={<Sparkles size={26} />}
@@ -1008,7 +1008,7 @@ function ResultPhase({ data, onAgain, onLab }: { data: ResultData; onAgain: () =
   const r = outcome.rewards;
   const rewards: Array<{ key: string; label: string; value: number; color: string; icon: ReactNode }> = [
     { key: 'xp', label: 'Evolution XP', value: r.xp, color: 'var(--bio)', icon: <Dna size={18} /> },
-    { key: 'bio', label: 'Bio-energy', value: r.bio, color: '#7dff8a', icon: <Zap size={18} /> },
+    { key: 'bio', label: 'Bio-energy', value: r.bio, color: '#9cc48a', icon: <Zap size={18} /> },
     { key: 'shards', label: 'Mutation Shards', value: r.shards, color: 'var(--shard)', icon: <Sparkles size={18} /> },
     { key: 'dxp', label: 'Discovery XP', value: r.dxp, color: 'var(--dxp)', icon: <Compass size={18} /> },
   ];

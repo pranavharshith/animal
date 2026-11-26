@@ -40,7 +40,7 @@
   border-color: color-mix(in srgb, var(--danger) 60%, transparent);
 }
 .imp-textarea.is-error:focus {
-  box-shadow: 0 0 0 3px rgba(255, 93, 122, 0.15);
+  box-shadow: 0 0 0 3px rgba(217, 118, 110, 0.15);
 }
 .imp-paste {
   position: absolute;
@@ -89,9 +89,9 @@
   gap: 10px;
   padding: 14px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 93, 122, 0.4);
-  background: rgba(255, 93, 122, 0.08);
-  color: #ffc2cd;
+  border: 1px solid rgba(217, 118, 110, 0.4);
+  background: rgba(217, 118, 110, 0.08);
+  color: #e5c1c7;
   font-size: 14px;
 }
 .imp-error svg {
@@ -110,7 +110,7 @@
   border: 1px solid color-mix(in srgb, var(--el) 35%, transparent);
   background:
     radial-gradient(circle at 18% 50%, color-mix(in srgb, var(--el) 22%, transparent), transparent 55%),
-    rgba(8, 14, 30, 0.55);
+    rgba(16, 19, 26, 0.55);
 }
 .imp-art {
   display: grid;
@@ -125,7 +125,7 @@
 .imp-name {
   font-size: 22px;
   overflow-wrap: anywhere;
-  text-shadow: 0 0 18px color-mix(in srgb, var(--rar) 50%, transparent);
+  text-shadow: 0 0 10.8px color-mix(in srgb, var(--rar) 18%, transparent);
 }
 .imp-badges {
   display: flex;

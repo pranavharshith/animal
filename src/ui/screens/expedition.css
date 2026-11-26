@@ -78,7 +78,7 @@
   position: absolute;
   inset: -3px;
   border-radius: inherit;
-  box-shadow: 0 0 22px 4px var(--shard);
+  box-shadow: 0 0 13.2px 2px color-mix(in srgb, var(--shard) 50%, transparent);
   opacity: 0;
   animation: exp-glow 1.6s ease-in-out infinite;
   pointer-events: none;
@@ -103,7 +103,7 @@
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--line);
-  background: rgba(10, 16, 32, 0.78);
+  background: rgba(25, 32, 38, 0.78);
   cursor: pointer;
   transition: transform 0.18s ease, border-color 0.2s, box-shadow 0.2s;
   outline: none;
@@ -118,7 +118,7 @@
 }
 .exp-env.selected {
   border-color: var(--env);
-  box-shadow: 0 0 0 1px var(--env), 0 0 30px color-mix(in srgb, var(--env) 35%, transparent);
+  box-shadow: 0 0 0 1px var(--env), 0 0 18px color-mix(in srgb, var(--env) 18%, transparent);
 }
 .exp-scene {
   position: relative;
@@ -174,12 +174,12 @@
   gap: 6px;
 }
 .exp-adv-strong {
-  color: #6dff9e;
-  border-color: rgba(109, 255, 158, 0.45);
+  color: #9cc48a;
+  border-color: rgba(156, 196, 138, 0.45);
 }
 .exp-adv-risky {
   color: var(--danger);
-  border-color: rgba(255, 93, 122, 0.45);
+  border-color: rgba(217, 118, 110, 0.45);
 }
 .exp-env-nudge {
   margin: 8px 0 0;
@@ -275,15 +275,15 @@
   overflow: hidden;
   border: 1px solid var(--line-2);
   background: rgba(2, 4, 10, 0.3);
-  box-shadow: var(--shadow), inset 0 0 80px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow), inset 0 0 48px rgba(0, 0, 0, 0.55);
   isolation: isolate;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
 }
 .exp-arena.enraged {
-  border-color: rgba(255, 93, 122, 0.6);
-  box-shadow: var(--shadow), inset 0 0 90px rgba(255, 40, 70, 0.35);
+  border-color: rgba(217, 118, 110, 0.6);
+  box-shadow: var(--shadow), inset 0 0 54px rgba(196, 96, 90, 0.175);
 }
 .exp-sky {
   position: absolute;
@@ -384,7 +384,7 @@
 }
 .exp-hp-weak {
   font-size: 10px;
-  color: #ffd35d;
+  color: #dcbf6e;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -538,8 +538,8 @@
   left: 50%;
   top: 12%;
   margin-left: -11px;
-  color: #5da9ff;
-  filter: drop-shadow(0 0 8px #5da9ff);
+  color: #7ea4cf;
+  filter: drop-shadow(0 0 4.8px color-mix(in srgb, #7ea4cf 50%, transparent));
   animation: exp-pulse 1s ease-in-out infinite;
 }
 .exp-hitflash {
@@ -552,7 +552,7 @@
   mix-blend-mode: screen;
 }
 .exp-hitflash.hurt {
-  background: radial-gradient(circle, rgba(255, 70, 90, 0.95), rgba(255, 70, 90, 0) 70%);
+  background: radial-gradient(circle, rgba(211, 111, 104, 0.95), rgba(211, 111, 104, 0) 70%);
 }
 
 /* Telegraph */
@@ -573,13 +573,13 @@
   font-weight: 900;
   font-size: clamp(22px, 3.6vw, 36px);
   line-height: 1;
-  color: #ff4d5e;
-  text-shadow: 0 0 14px #ff4d5e, 0 0 2px #fff;
+  color: #d36f68;
+  text-shadow: 0 0 8.4px color-mix(in srgb, #d36f68 35%, transparent), 0 0 1.2px color-mix(in srgb, #fff 35%, transparent);
   animation: exp-pulse 0.35s ease-in-out infinite;
 }
 .exp-telegraph.heavy .exp-bang {
-  color: #ff9a3d;
-  text-shadow: 0 0 18px #ff9a3d, 0 0 2px #fff;
+  color: #dd9a5e;
+  text-shadow: 0 0 10.8px color-mix(in srgb, #dd9a5e 35%, transparent), 0 0 1.2px color-mix(in srgb, #fff 35%, transparent);
 }
 .exp-wind {
   position: relative;
@@ -587,13 +587,13 @@
   height: 8px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 77, 94, 0.5);
+  border: 1px solid rgba(211, 111, 104, 0.5);
   overflow: hidden;
 }
 .exp-wind-fill {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #ff9a3d, #ff4d5e);
+  background: linear-gradient(90deg, #dd9a5e, #d36f68);
   transform-origin: 0 50%;
 }
 .exp-wind-zone {
@@ -608,7 +608,7 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ffb35d;
+  color: #e2b07a;
   white-space: nowrap;
 }
 @keyframes exp-pulse {
@@ -627,7 +627,7 @@
   border-radius: 16px;
   transform-origin: 0 50%;
   z-index: 4;
-  box-shadow: 0 0 26px var(--pel), 0 0 60px var(--pel);
+  box-shadow: 0 0 15.6px color-mix(in srgb, var(--pel) 50%, transparent), 0 0 36px color-mix(in srgb, var(--pel) 50%, transparent);
   animation: exp-beam 0.7s ease-out forwards;
   pointer-events: none;
 }
@@ -674,7 +674,7 @@
   height: 8px;
   border-radius: 50%;
   background: var(--bc);
-  box-shadow: 0 0 10px var(--bc);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--bc) 50%, transparent);
   animation: exp-burst 0.75s ease-out forwards;
 }
 .exp-burst.big i {
@@ -699,7 +699,7 @@
   font-weight: 800;
   font-size: 22px;
   color: #fff;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6), 0 0 7.2px rgba(0, 0, 0, 0.6);
   white-space: nowrap;
   pointer-events: none;
   animation: exp-float 1s ease-out forwards;
@@ -712,32 +712,32 @@
 }
 .exp-float.crit {
   font-size: 30px;
-  color: #ffe14d;
+  color: #dcc068;
 }
 .exp-float.hurt {
-  color: #ff5d7a;
+  color: #d9766e;
 }
 .exp-float.braced {
-  color: #8cc4ff;
+  color: #a1c0e2;
   font-size: 18px;
 }
 .exp-float.dodge {
-  color: #5dffb4;
+  color: #86c4a0;
   font-size: 18px;
 }
 .exp-float.perfect {
-  color: #7affdd;
+  color: #a9d9c2;
   font-size: 26px;
-  text-shadow: 0 0 16px #2bf0c0, 0 2px 0 rgba(0, 0, 0, 0.6);
+  text-shadow: 0 0 9.6px color-mix(in srgb, #82c6a6 35%, transparent), 0 2px 0 rgba(0, 0, 0, 0.6);
 }
 .exp-float.heal {
-  color: #7dff8a;
+  color: #9cc48a;
   font-size: 15px;
 }
 .exp-float.special {
   font-size: 38px;
   color: var(--pel);
-  text-shadow: 0 0 18px var(--pel), 0 2px 0 rgba(0, 0, 0, 0.6);
+  text-shadow: 0 0 10.8px color-mix(in srgb, var(--pel) 35%, transparent), 0 2px 0 rgba(0, 0, 0, 0.6);
 }
 @keyframes exp-float {
   0% {
@@ -802,13 +802,13 @@
   font-size: clamp(26px, 6vw, 58px);
   letter-spacing: 0.12em;
   color: #fff;
-  text-shadow: 0 0 24px var(--env), 0 4px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 14.4px color-mix(in srgb, var(--env) 35%, transparent), 0 4px 0 rgba(0, 0, 0, 0.5);
   pointer-events: none;
   animation: exp-banner 1.4s ease-out forwards;
 }
 .exp-banner.danger {
-  color: #ff5d7a;
-  text-shadow: 0 0 24px #ff2a4a, 0 4px 0 rgba(0, 0, 0, 0.5);
+  color: #d9766e;
+  text-shadow: 0 0 14.4px color-mix(in srgb, #c4605a 35%, transparent), 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 .exp-banner.win,
 .exp-banner.lose {
@@ -816,12 +816,12 @@
   animation: exp-banner-in 0.5s ease-out both;
 }
 .exp-banner.win {
-  color: #b6fff0;
-  text-shadow: 0 0 30px #2bf0c0, 0 4px 0 rgba(0, 0, 0, 0.5);
+  color: #cfe8db;
+  text-shadow: 0 0 18px color-mix(in srgb, #82c6a6 35%, transparent), 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 .exp-banner.lose {
-  color: #ffb35d;
-  text-shadow: 0 0 30px #ff5d2a, 0 4px 0 rgba(0, 0, 0, 0.5);
+  color: #e2b07a;
+  text-shadow: 0 0 18px color-mix(in srgb, #d5784f 35%, transparent), 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 @keyframes exp-banner {
   0% {
@@ -882,7 +882,7 @@
   min-height: 88px;
   border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 30%, rgba(8, 14, 28, 0.9)), color-mix(in srgb, var(--c) 10%, rgba(8, 14, 28, 0.9)));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 30%, rgba(16, 19, 25, 0.9)), color-mix(in srgb, var(--c) 10%, rgba(16, 19, 25, 0.9)));
   color: var(--ink);
   display: flex;
   flex-direction: column;
@@ -924,7 +924,7 @@
 .exp-cmd-icon {
   color: var(--c);
   display: grid;
-  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--c) 70%, transparent));
+  filter: drop-shadow(0 0 4.8px color-mix(in srgb, var(--c) 35%, transparent));
 }
 .exp-cmd-label {
   font-family: var(--display);
@@ -965,7 +965,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 0 26px var(--c), 0 0 0 2px var(--c);
+  box-shadow: inset 0 0 15.6px color-mix(in srgb, var(--c) 50%, transparent), 0 0 0 2px var(--c);
   opacity: 0;
   animation: exp-glow 0.8s ease-in-out infinite;
   pointer-events: none;
@@ -998,14 +998,14 @@
   margin: 6px 0;
 }
 .exp-result-head.win h2 {
-  background: linear-gradient(90deg, #b6fff0, #2bf0c0 50%, #d98bff);
+  background: linear-gradient(90deg, #cfe8db, #82c6a6 50%, #b6a1d6);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 24px rgba(43, 240, 192, 0.4));
+  filter: drop-shadow(0 0 14.4px rgba(130, 198, 166, 0.2));
 }
 .exp-result-head.lose h2 {
-  color: #ffb35d;
+  color: #e2b07a;
 }
 .exp-result-grid {
   display: grid;
@@ -1030,7 +1030,7 @@
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
-  background: color-mix(in srgb, var(--c) 10%, rgba(6, 10, 22, 0.6));
+  background: color-mix(in srgb, var(--c) 10%, rgba(12, 15, 20, 0.6));
 }
 .exp-reward-icon {
   grid-row: span 2;
@@ -1071,7 +1071,7 @@
 }
 .exp-xp-fill {
   background: linear-gradient(90deg, var(--bio), var(--shard));
-  box-shadow: 0 0 12px rgba(43, 240, 192, 0.5);
+  box-shadow: 0 0 7.2px rgba(130, 198, 166, 0.25);
 }
 .exp-xp-prev {
   background: rgba(255, 255, 255, 0.25);
@@ -1106,7 +1106,7 @@
   aspect-ratio: 1;
   margin: 0 auto;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 60%, rgba(43, 240, 192, 0.18), transparent 70%);
+  background: radial-gradient(circle at 50% 60%, rgba(130, 198, 166, 0.18), transparent 70%);
 }
 .exp-sample-name {
   display: flex;
@@ -1117,9 +1117,9 @@
   font-size: 16px;
 }
 .exp-new {
-  color: #ff4fd8;
-  border-color: rgba(255, 79, 216, 0.6);
-  box-shadow: 0 0 14px rgba(255, 79, 216, 0.4);
+  color: #d48ab0;
+  border-color: rgba(212, 138, 176, 0.6);
+  box-shadow: 0 0 8.4px rgba(212, 138, 176, 0.2);
   animation: exp-pulse 1.2s ease-in-out infinite;
 }
 .exp-result-actions {
