@@ -472,7 +472,7 @@ function BodyMutations({ x: ctx }: { x: Ctx }) {
   if (g.mutations.includes('heat_cracks')) {
     out.push(
       <g key="hc" filter={glow} clipPath={ctx.url('clip')} className={ctx.animated ? 'cr-glowpulse' : undefined}>
-        <path d={`M${f1(cx - rx * 0.7)},${f1(cy - ry * 0.1)} l8,-6 l5,8 l9,-10 l6,5 M${f1(cx + rx * 0.0)},${f1(cy + ry * 0.4)} l6,-9 l7,4 l5,-11 M${f1(cx - rx * 0.3)},${f1(cy + ry * 0.55)} l7,-4 l4,5`} stroke="#ffb347" strokeWidth={2.2} fill="none" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={`M${f1(cx - rx * 0.7)},${f1(cy - ry * 0.1)} l8,-6 l5,8 l9,-10 l6,5 M${f1(cx)},${f1(cy + ry * 0.4)} l6,-9 l7,4 l5,-11 M${f1(cx - rx * 0.3)},${f1(cy + ry * 0.55)} l7,-4 l4,5`} stroke="#ffb347" strokeWidth={2.2} fill="none" strokeLinejoin="round" strokeLinecap="round" />
         <path d={`M${f1(cx - rx * 0.7)},${f1(cy - ry * 0.1)} l8,-6 l5,8 l9,-10 l6,5`} stroke="#fff3c4" strokeWidth={0.8} fill="none" />
       </g>,
     );

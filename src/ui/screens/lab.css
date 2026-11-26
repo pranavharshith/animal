@@ -1,0 +1,1252 @@
+/* Fusion Chamber. All classes prefixed `lab-`. Animations use transform/opacity. */
+
+.lab {
+  --ca: #2bf0c0;
+  --cb: #d98bff;
+  position: relative;
+}
+
+/* ---------- Header ---------- */
+.lab-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.lab-title {
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 900;
+  line-height: 1.05;
+  background: linear-gradient(90deg, var(--ca), #ffffff 50%, var(--cb));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lab-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(43, 240, 192, 0.35);
+  background: rgba(43, 240, 192, 0.08);
+  color: var(--bio-2);
+  font-size: 14px;
+}
+
+.lab-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- Chamber ---------- */
+.lab-chamber {
+  position: relative;
+  padding-bottom: 22px;
+}
+.lab-chamber-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(55% 60% at 22% 42%, color-mix(in srgb, var(--ca) 16%, transparent), transparent 70%),
+    radial-gradient(55% 60% at 78% 42%, color-mix(in srgb, var(--cb) 16%, transparent), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(160, 200, 255, 0.04) 0 1px, transparent 1px 30px),
+    repeating-linear-gradient(90deg, rgba(160, 200, 255, 0.04) 0 1px, transparent 1px 30px);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 45%, #000 35%, transparent 85%);
+  mask-image: radial-gradient(ellipse at 50% 45%, #000 35%, transparent 85%);
+}
+
+.lab-stage {
+  --cap-w: 250px;
+  --cap-h: 318px;
+  --art: 220px;
+  --tag-h: 30px;
+  --core: 140px;
+  --pad-top: 24px;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  padding: var(--pad-top) 16px 6px;
+}
+
+/* ---------- Pods ---------- */
+.lab-pod-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+.lab-pod {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.lab-pod:disabled {
+  cursor: default;
+}
+.lab-pod:focus-visible {
+  outline: none;
+}
+.lab-pod:focus-visible .lab-capsule {
+  outline: 2px solid var(--pc);
+  outline-offset: 4px;
+}
+.lab-pod-tag {
+  height: var(--tag-h);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lab-pod-tag i {
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--pc);
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--pc) 50%, transparent);
+  animation: lab-blink 1.6s ease-in-out infinite;
+}
+
+.lab-capsule {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--cap-w);
+  height: var(--cap-h);
+  border-radius: calc(var(--cap-w) / 2) calc(var(--cap-w) / 2) 28px 28px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 70% at 50% 100%, color-mix(in srgb, var(--pc) 30%, transparent), transparent 62%),
+    linear-gradient(180deg, rgba(12, 20, 40, 0.55), rgba(5, 9, 20, 0.85));
+  border: 1px solid color-mix(in srgb, var(--pc) 40%, transparent);
+  box-shadow:
+    inset 0 0 50px color-mix(in srgb, var(--pc) 18%, transparent),
+    0 0 40px color-mix(in srgb, var(--pc) 16%, transparent),
+    0 24px 50px rgba(0, 0, 0, 0.45);
+  transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+}
+.lab-capsule::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 12px 22px rgba(255, 255, 255, 0.07),
+    inset -8px 0 18px rgba(255, 255, 255, 0.03),
+    inset 0 -2px 0 color-mix(in srgb, var(--pc) 50%, transparent);
+}
+.lab-pod:hover:not(:disabled) .lab-capsule {
+  border-color: color-mix(in srgb, var(--pc) 70%, transparent);
+  transform: translateY(-2px);
+}
+.lab-pod.focused .lab-capsule {
+  border-color: var(--pc);
+  box-shadow:
+    0 0 0 1px var(--pc),
+    inset 0 0 60px color-mix(in srgb, var(--pc) 28%, transparent),
+    0 0 54px color-mix(in srgb, var(--pc) 36%, transparent),
+    0 24px 50px rgba(0, 0, 0, 0.45);
+}
+.lab-pod.empty .lab-capsule {
+  border-style: dashed;
+}
+.lab-capsule-fluid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 32%;
+  z-index: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pc) 32%, transparent), color-mix(in srgb, var(--pc) 10%, transparent));
+  border-top: 1px solid color-mix(in srgb, var(--pc) 60%, transparent);
+  animation: lab-slosh 6s ease-in-out infinite;
+}
+.lab-bubbles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.lab-bubbles i {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--pc) 70%, white);
+  background: color-mix(in srgb, var(--pc) 25%, transparent);
+  opacity: 0;
+  animation: lab-bubble 5s linear infinite;
+}
+.lab-pod-art {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: var(--art);
+  aspect-ratio: 1;
+  margin-top: 8%;
+  animation: lab-float 5s ease-in-out infinite;
+}
+.lab-pod-B .lab-pod-art {
+  animation-delay: -2.5s;
+}
+/* Parents face each other across the core. */
+.lab-pod-B .lab-pod-art > svg {
+  transform: scaleX(-1);
+}
+.lab-pod-empty {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.lab-capsule-charge {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 52%, color-mix(in srgb, var(--pc) 70%, white) 0, color-mix(in srgb, var(--pc) 40%, transparent) 35%, transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 1.4s ease-in;
+}
+.lab-capsule-glint {
+  position: absolute;
+  top: 7%;
+  left: 13%;
+  width: 11%;
+  height: 56%;
+  z-index: 4;
+  border-radius: 999px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+}
+.lab-pod-base {
+  position: relative;
+  width: calc(var(--cap-w) * 0.9);
+  height: 14px;
+  margin-top: 4px;
+  border-radius: 6px 6px 50% 50%;
+  background: linear-gradient(180deg, #1c2946, #090e1c);
+  border: 1px solid var(--line-2);
+  box-shadow:
+    0 0 26px color-mix(in srgb, var(--pc) 45%, transparent),
+    0 -4px 14px color-mix(in srgb, var(--pc) 30%, transparent);
+}
+.lab-pod-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  min-height: 54px;
+  max-width: 100%;
+  text-align: center;
+  transition: opacity 0.3s;
+}
+.lab-pod-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+}
+.lab-pod-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Charging state on the pods */
+.lab-phase-charging .lab-capsule-charge {
+  opacity: 0.95;
+}
+.lab-phase-charging .lab-pod-art {
+  animation: lab-tremble 0.11s linear infinite;
+}
+.lab-phase-charging .lab-pod-info,
+.lab-phase-burst .lab-pod-info {
+  opacity: 0;
+}
+
+/* ---------- DNA streams ---------- */
+.lab-helix {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--pad-top) + var(--tag-h) + var(--cap-h) / 2 - 22px);
+  left: 22%;
+  width: 28%;
+  height: 44px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+.lab-helix-B {
+  left: auto;
+  right: 22%;
+  transform: scaleX(-1);
+}
+.lab-helix.on {
+  opacity: 0.22;
+}
+.lab-helix.charging {
+  opacity: 1;
+}
+.lab-helix-track {
+  display: block;
+  width: 200%;
+  height: 100%;
+  animation: lab-flow 2.4s linear infinite;
+}
+.lab-helix-track svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.lab-helix.charging .lab-helix-track {
+  animation-duration: 0.42s;
+}
+
+/* ---------- Fusion core ---------- */
+.lab-core-col {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: calc(var(--tag-h) + var(--cap-h) / 2 - var(--core) / 2);
+}
+.lab-core-anchor {
+  position: relative;
+  width: var(--core);
+  height: var(--core);
+}
+.lab-core {
+  position: absolute;
+  inset: 0;
+}
+.lab-core > span {
+  position: absolute;
+  border-radius: 50%;
+}
+.lab-core-halo {
+  inset: -45%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--ca) 38%, transparent), color-mix(in srgb, var(--cb) 20%, transparent) 42%, transparent 70%);
+  animation: lab-halo 3s ease-in-out infinite;
+}
+.lab-core-ring {
+  inset: 0;
+}
+.lab-ring-1 {
+  border: 1.5px dashed color-mix(in srgb, var(--ca) 70%, transparent);
+  animation: lab-spin 10s linear infinite;
+}
+.lab-ring-2 {
+  inset: 9%;
+  border: 2px solid transparent;
+  border-top-color: var(--cb);
+  border-bottom-color: var(--ca);
+  animation: lab-spin 3.2s linear infinite reverse;
+}
+.lab-core-orb {
+  inset: 22%;
+  overflow: hidden;
+  background: radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.95) 0, color-mix(in srgb, var(--ca) 70%, white) 16%, var(--ca) 40%, var(--cb) 78%, color-mix(in srgb, var(--cb) 50%, black) 100%);
+  box-shadow:
+    0 0 30px color-mix(in srgb, var(--ca) 80%, transparent),
+    0 0 64px color-mix(in srgb, var(--cb) 55%, transparent),
+    inset 0 0 18px rgba(255, 255, 255, 0.4);
+  animation: lab-orb 2.6s ease-in-out infinite;
+}
+.lab-core-dna {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160%;
+  height: 46%;
+  overflow: hidden;
+  opacity: 0.6;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.lab-core-dna .lab-helix-track {
+  animation-duration: 1.6s;
+}
+.lab-core-shine {
+  inset: 22%;
+  pointer-events: none;
+  background: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.7), transparent 30%);
+}
+.lab-core.charging .lab-core-orb {
+  animation-duration: 0.45s;
+}
+.lab-core.charging .lab-ring-2 {
+  animation-duration: 0.55s;
+}
+.lab-core.charging .lab-ring-1 {
+  animation-duration: 1.6s;
+}
+.lab-core.charging .lab-core-halo {
+  animation: lab-halo-hot 0.4s ease-in-out infinite;
+}
+.lab-core.charging .lab-core-dna .lab-helix-track {
+  animation-duration: 0.35s;
+}
+.lab-swap {
+  opacity: 0.75;
+}
+
+/* ---------- Burst ---------- */
+.lab-burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.lab-shock {
+  position: absolute;
+  left: -40px;
+  top: -40px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 30px var(--ca), inset 0 0 30px var(--cb);
+}
+.lab-shock-2 {
+  border: 6px solid color-mix(in srgb, var(--cb) 80%, white);
+}
+.lab-spark {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  border-radius: 50%;
+}
+
+.lab-screen-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at 30% 48%, color-mix(in srgb, var(--ca) 42%, transparent), transparent 55%),
+    radial-gradient(circle at 70% 48%, color-mix(in srgb, var(--cb) 42%, transparent), transparent 55%),
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.22), transparent 38%);
+}
+.lab-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 45%, #ffffff 0, rgba(255, 255, 255, 0.94) 35%, rgba(225, 242, 255, 0.78) 100%);
+}
+
+/* ---------- FUSE bar ---------- */
+.lab-fusebar {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 0;
+}
+.lab-fuse-btn {
+  position: relative;
+  min-width: 250px;
+  padding: 16px 30px;
+  font-size: 20px;
+  letter-spacing: 0.16em;
+}
+.lab-fuse-btn::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ca), var(--cb));
+  filter: blur(16px);
+  opacity: 0;
+  pointer-events: none;
+}
+.lab-fuse-btn:not(:disabled)::after {
+  animation: lab-glow-pulse 2.4s ease-in-out infinite;
+}
+.lab-fuse-cost {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(3, 20, 15, 0.16);
+}
+.lab-fuse-meta {
+  min-height: 18px;
+  font-size: 13px;
+}
+.lab-blocker {
+  color: var(--danger);
+}
+.lab-opposed,
+.lab-opposed-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ff7fe3;
+  font-size: 13px;
+}
+.lab-opposed {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 79, 216, 0.4);
+  background: rgba(255, 79, 216, 0.08);
+  animation: lab-blink 2.4s ease-in-out infinite;
+}
+.lab-opposed-mini {
+  font-size: 12px;
+}
+
+/* ---------- Picker ---------- */
+.lab-picker,
+.lab-traits,
+.lab-panel {
+  padding: 14px 16px;
+}
+.lab-locked {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.lab-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 10px;
+}
+.lab-picker-target {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.lab-picker-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scroll-snap-type: x proximity;
+}
+.lab-picker-row > .creature-tile {
+  flex: 0 0 118px;
+  scroll-snap-align: start;
+}
+.lab-tile-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.lab-slot-badge {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  color: #03140f;
+  background: var(--el);
+  box-shadow: 0 0 10px var(--el);
+}
+.lab-remix-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: var(--dxp);
+  background: rgba(255, 209, 102, 0.16);
+  border: 1px solid rgba(255, 209, 102, 0.45);
+}
+
+/* ---------- Trait table ---------- */
+.lab-tt {
+  display: grid;
+  gap: 2px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.lab-tt-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.lab-tt-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
+}
+.lab-tt-row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.lab-tt-a {
+  text-align: right;
+}
+.lab-tt-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lab-tt-head {
+  font-family: var(--display);
+  font-size: 13px;
+  background: none !important;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+}
+.lab-tt-head > span:first-child {
+  text-align: right;
+}
+.lab-tt-head > span:nth-child(2) {
+  text-align: center;
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lab-tt-row.same {
+  background: rgba(43, 240, 192, 0.06);
+}
+.lab-tt-row.same .lab-tt-label {
+  color: var(--bio);
+}
+
+/* ---------- Reveal ---------- */
+.lab-reveal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.lab-reveal-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  background:
+    radial-gradient(70% 90% at 25% 50%, color-mix(in srgb, var(--rc) 22%, transparent), transparent 70%),
+    linear-gradient(160deg, var(--glass-2), var(--glass));
+}
+.lab-reveal-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 380px;
+}
+.lab-rays {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 900px;
+  height: 900px;
+  margin: -450px 0 0 -450px;
+  pointer-events: none;
+  opacity: 0.8;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--rc) 30%, transparent) 0deg 6deg, transparent 6deg 18deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0, rgba(0, 0, 0, 0.5) 22%, transparent 52%);
+  mask-image: radial-gradient(circle, #000 0, rgba(0, 0, 0, 0.5) 22%, transparent 52%);
+  animation: lab-spin 40s linear infinite;
+}
+.lab-reveal-glow {
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--rc) 55%, white 10%), color-mix(in srgb, var(--rc) 20%, transparent) 45%, transparent 70%);
+}
+.lab-reveal-prism {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, #ff4fd8, #7b8cff, #3dd6ff, #7dff8a, #ffe14d, #ff7a3d, #ff4fd8);
+  filter: blur(34px);
+  opacity: 0.5;
+  animation: lab-spin 5s linear infinite;
+}
+.lab-reveal-sparks {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: 1;
+}
+.lab-reveal-art {
+  position: relative;
+  z-index: 2;
+  width: 300px;
+  aspect-ratio: 1;
+}
+.lab-reveal-layer {
+  position: absolute;
+  inset: 0;
+}
+.lab-reveal-sil {
+  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--rc) 85%, transparent));
+}
+.lab-reveal-info {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 8px 8px 0;
+  min-width: 0;
+}
+.lab-reveal-name {
+  position: relative;
+  font-size: clamp(34px, 5.4vw, 60px);
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  overflow-wrap: anywhere;
+  text-shadow: 0 0 24px color-mix(in srgb, var(--rc) 70%, transparent), 0 0 60px color-mix(in srgb, var(--rc) 40%, transparent);
+}
+.lab-letters > span {
+  display: inline-block;
+}
+.lab-reveal-badges,
+.lab-reveal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lab-reveal-actions {
+  gap: 10px;
+  margin-top: 4px;
+}
+.lab-reveal-parents {
+  margin: 0;
+  color: var(--ink-2);
+}
+.lab-plus {
+  margin: 0 8px;
+  color: var(--ink-3);
+}
+.lab-mutation-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 79, 216, 0.45);
+  background: linear-gradient(135deg, rgba(255, 79, 216, 0.15), rgba(140, 80, 255, 0.08));
+  box-shadow: 0 0 30px rgba(255, 79, 216, 0.16);
+  text-align: left;
+}
+.lab-mutation-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: #ff8be6;
+  background: rgba(255, 79, 216, 0.2);
+}
+.lab-mutation-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ff8be6;
+}
+.lab-mutation-card b {
+  font-family: var(--display);
+  font-size: 16px;
+}
+.lab-mutation-card p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* Anomaly treatment */
+.lab-anomaly-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  color: #08020f;
+  font-family: var(--display);
+  letter-spacing: 0.2em;
+  background: linear-gradient(90deg, #ff4fd8, #7b8cff, #3dd6ff, #7dff8a, #ffe14d, #ff7a3d, #ff4fd8);
+  background-size: 200% 100%;
+  box-shadow: 0 0 40px rgba(255, 79, 216, 0.45);
+  animation: lab-rainbow 3s linear infinite;
+}
+.lab-anomaly-banner span {
+  font-family: var(--font);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+.lab-reveal-anomaly .lab-reveal-hero {
+  border-color: rgba(255, 79, 216, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 79, 216, 0.3), 0 0 60px rgba(255, 79, 216, 0.25), var(--shadow);
+}
+.lab-reveal-anomaly .lab-rays {
+  opacity: 0.45;
+  background: repeating-conic-gradient(#ff4fd8 0 5deg, transparent 5deg 12deg, #3dd6ff 12deg 17deg, transparent 17deg 24deg, #ffe14d 24deg 29deg, transparent 29deg 36deg);
+  animation-duration: 18s;
+}
+.lab-reveal-anomaly .lab-reveal-art {
+  animation: lab-glitch-shift 3.2s steps(1) 1.4s infinite;
+}
+.lab-glitch::before,
+.lab-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  animation: lab-glitch 2.6s steps(1) 1.6s infinite;
+}
+.lab-glitch::before {
+  color: #3dd6ff;
+  clip-path: inset(0 0 55% 0);
+}
+.lab-glitch::after {
+  color: #ff4fd8;
+  clip-path: inset(50% 0 0 0);
+  animation-delay: 1.75s;
+}
+
+.lab-reveal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.lab-legend {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.lab-legend i {
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+}
+.lab-inherit {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.lab-inherit li {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.025);
+}
+.lab-inherit li.is-new {
+  background: linear-gradient(90deg, rgba(255, 79, 216, 0.12), rgba(255, 79, 216, 0.02));
+}
+.lab-inherit-trait {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lab-inherit-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.lab-swatches {
+  display: inline-flex;
+  flex: none;
+}
+.lab-swatches i {
+  width: 14px;
+  height: 14px;
+  margin-left: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+}
+.lab-swatches i:first-child {
+  margin-left: 0;
+}
+.lab-tag {
+  --t: var(--bio);
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--t);
+  border: 1px solid color-mix(in srgb, var(--t) 55%, transparent);
+  background: color-mix(in srgb, var(--t) 12%, transparent);
+}
+.lab-tag-blend {
+  color: #ffffff;
+  border-color: transparent;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ca) 70%, transparent), color-mix(in srgb, var(--cb) 70%, transparent));
+}
+.lab-tag-new {
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  border-color: #ff4fd8;
+  background: rgba(255, 79, 216, 0.3);
+  box-shadow: 0 0 12px rgba(255, 79, 216, 0.5);
+}
+.lab-stat-list {
+  display: grid;
+  gap: 12px;
+  padding-top: 4px;
+}
+.lab-stats-note {
+  margin: 14px 0 0;
+  font-size: 12px;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes lab-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes lab-flow {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes lab-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes lab-tremble {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-2px, 1px);
+  }
+  50% {
+    transform: translate(2px, -1px);
+  }
+  75% {
+    transform: translate(-1px, -2px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes lab-slosh {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+@keyframes lab-bubble {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateY(calc(var(--cap-h) * -1));
+    opacity: 0;
+  }
+}
+@keyframes lab-orb {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+@keyframes lab-halo {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+@keyframes lab-halo-hot {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+@keyframes lab-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+@keyframes lab-blink {
+  50% {
+    opacity: 0.5;
+  }
+}
+@keyframes lab-rainbow {
+  to {
+    background-position: 200% 0;
+  }
+}
+@keyframes lab-glitch {
+  0%,
+  84%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  86% {
+    opacity: 0.9;
+    transform: translate(-4px, 1px);
+  }
+  90% {
+    opacity: 0.9;
+    transform: translate(3px, -1px);
+  }
+  94% {
+    opacity: 0;
+  }
+}
+@keyframes lab-glitch-shift {
+  0%,
+  88%,
+  100% {
+    transform: none;
+  }
+  90% {
+    transform: translate(-3px, 1px) skewX(4deg);
+  }
+  93% {
+    transform: translate(4px, -2px) skewX(-6deg);
+  }
+  96% {
+    transform: translate(-1px, 0);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+.lab-reduced *,
+.lab-reduced *::before,
+.lab-reduced *::after {
+  animation: none !important;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 760px) {
+  .lab-stage {
+    --cap-w: 136px;
+    --cap-h: 190px;
+    --art: 122px;
+    --tag-h: 26px;
+    --core: 76px;
+    --pad-top: 16px;
+    gap: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .lab-capsule {
+    border-radius: calc(var(--cap-w) / 2) calc(var(--cap-w) / 2) 18px 18px;
+  }
+  .lab-pod-tag {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+  .lab-pod-tag i {
+    display: none;
+  }
+  .lab-pod-name {
+    font-size: 14px;
+  }
+  .lab-pod-info {
+    min-height: 64px;
+  }
+  .lab-core-col {
+    gap: 10px;
+  }
+  .lab-fuse-btn {
+    width: 100%;
+    max-width: 360px;
+    min-width: 0;
+    font-size: 18px;
+  }
+  .lab-picker-row > .creature-tile {
+    flex-basis: 104px;
+  }
+  .lab-picker,
+  .lab-traits,
+  .lab-panel {
+    padding: 12px;
+  }
+  .lab-tt-row {
+    grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr);
+    gap: 6px;
+    padding: 6px;
+    font-size: 12px;
+  }
+  .lab-tt-label,
+  .lab-tt-head > span:nth-child(2) {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+  .lab-tt-head {
+    font-size: 11px;
+  }
+  .lab-reveal-hero {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px;
+  }
+  .lab-reveal-stage {
+    min-height: 260px;
+  }
+  .lab-reveal-art {
+    width: 220px;
+  }
+  .lab-reveal-glow {
+    width: 250px;
+    height: 250px;
+  }
+  .lab-reveal-info {
+    padding: 0 4px 4px;
+    align-items: center;
+    text-align: center;
+  }
+  .lab-reveal-badges,
+  .lab-reveal-actions {
+    justify-content: center;
+  }
+  .lab-reveal-actions .btn {
+    flex: 1 1 auto;
+  }
+  .lab-reveal-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lab-inherit li {
+    grid-template-columns: 68px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+  .lab-tag {
+    max-width: 96px;
+  }
+}
+@media (max-width: 400px) {
+  .lab-stage {
+    --cap-w: 114px;
+    --cap-h: 166px;
+    --art: 104px;
+    --core: 60px;
+  }
+  .lab-pod-badges .chip {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+}

@@ -1,6 +1,6 @@
 // Shared presentational components used across all screens.
 import { AnimatePresence, motion } from 'framer-motion';
-import { Sparkles, X } from 'lucide-react';
+import { Droplet, Flame, Leaf, Moon, Snowflake, Sparkles, X, Zap } from 'lucide-react';
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
 import { play } from '../../audio/sfx';
 import { ELEMENT_INFO, PERSONALITY_INFO, RARITY_INFO } from '../../engine/data';
@@ -20,11 +20,19 @@ export function RarityBadge({ rarity, small }: { rarity: Rarity; small?: boolean
   );
 }
 
+const ELEMENT_ICONS: Record<Element, typeof Flame> = { ember: Flame, tide: Droplet, bloom: Leaf, volt: Zap, frost: Snowflake, shadow: Moon };
+
+/** Element icon (Lucide) so it renders identically on every platform. */
+export function ElementIcon({ element, size = 13, color }: { element: Element; size?: number; color?: string }) {
+  const Icon = ELEMENT_ICONS[element];
+  return <Icon size={size} color={color ?? ELEMENT_INFO[element].color} strokeWidth={2.4} aria-hidden style={{ display: 'inline-block', verticalAlign: '-0.15em', flex: 'none' }} />;
+}
+
 export function ElementBadge({ element, small }: { element: Element; small?: boolean }) {
   const e = ELEMENT_INFO[element];
   return (
     <span className={`chip ${small ? 'chip-sm' : ''}`} style={{ color: e.color, borderColor: e.color + '55', background: e.color + '14' }}>
-      <span aria-hidden>{e.glyph}</span>
+      <ElementIcon element={element} size={small ? 11 : 13} />
       {e.name}
     </span>
   );
@@ -82,7 +90,7 @@ export function CreatureTile({
       <div className="tile-meta">
         <span className="tile-name">{creature.name}</span>
         <span className="tile-sub">
-          <span style={{ color: el.color }}>{el.glyph}</span>
+          <ElementIcon element={creature.genome.element} size={11} />
           <StagePips stage={creature.stage} />
           <span className="tile-rar" style={{ color: RARITY_INFO[rarity].color }}>
             {RARITY_INFO[rarity].name}

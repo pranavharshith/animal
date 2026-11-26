@@ -29,7 +29,8 @@ export function generateEnemies(env: EnvironmentId, seed: number, player: Creatu
     const element = rng() < 0.8 ? info.element : undefined;
     const genome = genomeFromSeed(s, { element, rareBias: 1 + wave * 0.5 });
     const archetype = archetypes[(s >>> 3) % archetypes.length];
-    const tier = 1 + wave * 0.25 + (player.stage - 1) * 0.2;
+    // Enemy stats already derive from the player's (stage-scaled) stats, so stage adds only a little.
+    const tier = 1 + wave * 0.25 + (player.stage - 1) * 0.05;
     const base = { vigor: ps.power * (7 + wave * 2.5), power: Math.max(6, ps.vigor * 0.11), guard: 1, speed: 10, focus: 10 };
     const mods = archetype === 'brute' ? { vigor: 1.25, power: 1.35, tempo: 2.6, windup: 1.05 } : archetype === 'skitter' ? { vigor: 0.8, power: 0.7, tempo: 1.6, windup: 0.7 } : { vigor: 1, power: 1.1, tempo: 2.2, windup: 1.2 };
     out.push({
@@ -64,10 +65,12 @@ export function resolveExpedition(c: Creature, log: ExpeditionLog, discovered: s
   const delta = tendencyDelta(log, visitsBefore, distinctEnvs);
   const tendencies = applyDelta(c.tendencies, delta);
 
-  const xp = log.won ? 42 + log.defeated * 6 + (log.perfectDodges > 2 ? 6 : 0) : 14 + log.defeated * 8;
-  const bio = log.won ? 22 + log.defeated * 4 : 8;
-  const shards = log.won ? 1 + (log.defeated >= 2 ? 1 : 0) + (chance(rng, 0.25) ? 1 : 0) : chance(rng, 0.3) ? 1 : 0;
-  const dxp = (log.won ? 24 : 10) + (visitsBefore === 0 ? 15 : 0) + log.investigations * 3;
+  // A loss still teaches something, but only if the creature actually fought (no retreat farming).
+  const engaged = log.won || log.defeated > 0 || (log.durationSec >= 12 && log.attacks + log.dodges >= 6);
+  const xp = log.won ? 42 + log.defeated * 6 + (log.perfectDodges > 2 ? 6 : 0) : engaged ? 14 + log.defeated * 8 : 0;
+  const bio = log.won ? 22 + log.defeated * 4 : engaged ? 8 : 0;
+  const shards = log.won ? 1 + (log.defeated >= 2 ? 1 : 0) + (chance(rng, 0.25) ? 1 : 0) : engaged && chance(rng, 0.3) ? 1 : 0;
+  const dxp = engaged ? (log.won ? 24 : 10) + (visitsBefore === 0 ? 15 : 0) + log.investigations * 3 : 0;
 
   // Genetic sample: on a win, recover one defeated organism's genome.
   let sample: Creature | null = null;

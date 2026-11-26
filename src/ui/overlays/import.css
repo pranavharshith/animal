@@ -1,0 +1,259 @@
+/* Import genome modal. */
+.imp-modal.modal {
+  width: min(600px, 100%);
+}
+.imp-form,
+.imp-success {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.imp-lead {
+  margin: 0;
+  font-size: 14px;
+}
+.imp-lead.center {
+  text-align: center;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.imp-input-wrap {
+  position: relative;
+}
+.imp-textarea {
+  display: block;
+  resize: vertical;
+  min-height: 84px;
+  padding-bottom: 42px;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-all;
+  color: var(--bio-2);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.imp-textarea.is-ok {
+  border-color: color-mix(in srgb, var(--bio) 55%, transparent);
+}
+.imp-textarea.is-error {
+  border-color: color-mix(in srgb, var(--danger) 60%, transparent);
+}
+.imp-textarea.is-error:focus {
+  box-shadow: 0 0 0 3px rgba(255, 93, 122, 0.15);
+}
+.imp-paste {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+}
+
+.imp-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--dxp);
+}
+
+.imp-preview-slot {
+  min-height: 190px;
+  display: grid;
+}
+.imp-placeholder {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border: 1px dashed var(--line-2);
+  border-radius: var(--radius);
+  color: var(--ink-3);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+.imp-placeholder svg {
+  opacity: 0.7;
+  animation: imp-float 3s ease-in-out infinite;
+}
+@keyframes imp-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-4px) rotate(8deg);
+  }
+}
+.imp-error {
+  display: flex;
+  align-items: flex-start;
+  align-self: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 93, 122, 0.4);
+  background: rgba(255, 93, 122, 0.08);
+  color: #ffc2cd;
+  font-size: 14px;
+}
+.imp-error svg {
+  flex: none;
+  color: var(--danger);
+  margin-top: 1px;
+}
+
+.imp-preview {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--el) 35%, transparent);
+  background:
+    radial-gradient(circle at 18% 50%, color-mix(in srgb, var(--el) 22%, transparent), transparent 55%),
+    rgba(8, 14, 30, 0.55);
+}
+.imp-art {
+  display: grid;
+  place-items: center;
+}
+.imp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.imp-name {
+  font-size: 22px;
+  overflow-wrap: anywhere;
+  text-shadow: 0 0 18px color-mix(in srgb, var(--rar) 50%, transparent);
+}
+.imp-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.imp-badges.center {
+  justify-content: center;
+}
+.imp-genes {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 12px;
+  font-size: 12px;
+}
+.imp-genes div {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+.imp-genes dt {
+  color: var(--ink-3);
+  flex: none;
+  width: 38px;
+}
+.imp-genes dd {
+  margin: 0;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.imp-muts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.imp-muts .chip {
+  color: var(--el);
+  border-color: color-mix(in srgb, var(--el) 40%, transparent);
+}
+
+.imp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Success */
+.imp-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.imp-hero-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 240px;
+  height: 230px;
+}
+.imp-burst {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--el) 55%, transparent), color-mix(in srgb, var(--el) 10%, transparent) 50%, transparent 70%);
+  animation: imp-burst 0.9s ease-out both, imp-pulse 3.2s ease-in-out 0.9s infinite;
+}
+@keyframes imp-burst {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+}
+@keyframes imp-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+.imp-success .imp-actions {
+  justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .imp-preview {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .imp-badges {
+    justify-content: center;
+  }
+  .imp-genes {
+    text-align: left;
+    width: 100%;
+  }
+  .imp-actions {
+    justify-content: stretch;
+  }
+  .imp-actions .btn {
+    flex: 1 1 auto;
+  }
+  .imp-actions .btn-lg {
+    flex-basis: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .imp-burst,
+  .imp-placeholder svg {
+    animation: none;
+  }
+}

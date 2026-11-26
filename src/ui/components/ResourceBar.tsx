@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Gem, Telescope, Zap } from 'lucide-react';
 import type { Resources } from '../../engine/types';
 import './resourceBar.css';
+/* eslint-disable react-refresh/only-export-components */
 
 export const RESOURCE_META = {
   bio: { label: 'Bio-energy', short: 'Bio', color: 'var(--bio)', icon: Zap, hint: 'Spent on fusion' },

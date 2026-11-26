@@ -1,6 +1,6 @@
 // Game store: React context exposing state + synchronous actions that return results.
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { configureAudio, play } from '../audio/sfx';
 import { ACHIEVEMENT_INFO, ENV_INFO, MUTATION_INFO } from '../engine/data';
 import { canEvolve, evolve } from '../engine/evolution';
@@ -69,7 +69,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GameState>(() => loadGame());
   const [toasts, setToasts] = useState<Toast[]>([]);
   const ref = useRef(state);
-  ref.current = state;
+  useLayoutEffect(() => {
+    ref.current = state;
+  }, [state]);
   const toastId = useRef(1);
 
   useEffect(() => {

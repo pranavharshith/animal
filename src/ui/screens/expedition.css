@@ -1,0 +1,1248 @@
+/* Expedition screen: environment select, real-time arena, results. All classes prefixed exp-. */
+.exp-screen {
+  position: relative;
+}
+.exp-intro {
+  margin: -6px 0 16px;
+}
+.exp-head-chip {
+  color: var(--ink-2);
+}
+.exp-panel {
+  padding: 16px;
+  min-width: 0;
+}
+.exp-mini-title {
+  margin: 12px 0 8px;
+}
+.exp-note {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  margin: 8px 0;
+}
+.exp-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- Select ---------- */
+.exp-select {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 16px;
+  align-items: start;
+}
+.exp-roster {
+  margin: 8px 0 12px;
+}
+.exp-hero {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+.exp-hero-art {
+  aspect-ratio: 1;
+  border-radius: 18px;
+  background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--el) 26%, transparent), transparent 70%);
+  display: grid;
+  place-items: center;
+}
+.exp-hero-name {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+.exp-perk {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  margin: 8px 0;
+}
+.exp-stats {
+  display: grid;
+  gap: 4px;
+}
+.exp-sub-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+.exp-evolve-glow {
+  position: relative;
+}
+.exp-evolve-glow::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  box-shadow: 0 0 22px 4px var(--shard);
+  opacity: 0;
+  animation: exp-glow 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes exp-glow {
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.exp-envs-wrap {
+  min-width: 0;
+}
+.exp-envs {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.exp-env {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(10, 16, 32, 0.78);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.exp-env:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--env) 45%, transparent);
+}
+.exp-env:focus-visible {
+  outline: 2px solid var(--env);
+  outline-offset: 2px;
+}
+.exp-env.selected {
+  border-color: var(--env);
+  box-shadow: 0 0 0 1px var(--env), 0 0 30px color-mix(in srgb, var(--env) 35%, transparent);
+}
+.exp-scene {
+  position: relative;
+  height: 92px;
+  overflow: hidden;
+}
+.exp-scene svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.exp-scene-glow {
+  position: absolute;
+  inset: 0;
+}
+.exp-scene-bolt {
+  animation: exp-bolt 3.2s steps(1) infinite;
+}
+@keyframes exp-bolt {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  8%,
+  12% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.3;
+  }
+}
+.exp-env-body {
+  padding: 10px 12px 12px;
+}
+.exp-env-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.exp-env-top h4 {
+  font-size: 14px;
+}
+.exp-env-tag {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.exp-env-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.exp-adv-strong {
+  color: #6dff9e;
+  border-color: rgba(109, 255, 158, 0.45);
+}
+.exp-adv-risky {
+  color: var(--danger);
+  border-color: rgba(255, 93, 122, 0.45);
+}
+.exp-env-nudge {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+.exp-env-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(3, 5, 12, 0.55), rgba(3, 5, 12, 0.92) 45%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  color: var(--ink-2);
+  text-align: center;
+  padding: 12px;
+}
+.exp-env-lock-name {
+  font-family: var(--display);
+  font-size: 15px;
+  color: var(--ink);
+}
+.exp-env-lock-need {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.exp-launch {
+  position: sticky;
+  bottom: 12px;
+  z-index: 5;
+  margin-top: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.exp-launch-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.exp-launch-info b {
+  font-family: var(--display);
+  font-size: 16px;
+}
+.exp-launch-info .dim {
+  font-size: 12.5px;
+}
+.exp-launch-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.exp-begin {
+  min-width: 250px;
+}
+
+/* ---------- Battle ---------- */
+.exp-battle {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.exp-battle-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.exp-battle-env {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.exp-battle-env b {
+  font-family: var(--display);
+}
+
+.exp-arena {
+  position: relative;
+  width: min(100%, calc(62vh * 16 / 9));
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  background: rgba(2, 4, 10, 0.3);
+  box-shadow: var(--shadow), inset 0 0 80px rgba(0, 0, 0, 0.55);
+  isolation: isolate;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.exp-arena.enraged {
+  border-color: rgba(255, 93, 122, 0.6);
+  box-shadow: var(--shadow), inset 0 0 90px rgba(255, 40, 70, 0.35);
+}
+.exp-sky {
+  position: absolute;
+  inset: 0 0 35% 0;
+}
+.exp-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  perspective: 420px;
+  overflow: hidden;
+}
+.exp-floor-plane {
+  position: absolute;
+  inset: 0;
+}
+.exp-floor-grid {
+  position: absolute;
+  left: -60%;
+  right: -60%;
+  top: 0;
+  bottom: -60%;
+  background-image: repeating-linear-gradient(90deg, color-mix(in srgb, var(--env) 40%, transparent) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--env) 40%, transparent) 0 1px, transparent 1px 64px);
+  transform: rotateX(64deg);
+  transform-origin: 50% 0;
+  opacity: 0.35;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 35%);
+  mask-image: linear-gradient(180deg, transparent, #000 35%);
+}
+.exp-floor-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 50% 35%, color-mix(in srgb, var(--env) 38%, transparent), transparent 70%);
+  animation: exp-breathe 4s ease-in-out infinite;
+}
+@keyframes exp-breathe {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* HUD */
+.exp-hud {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.exp-hp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(38%, 300px);
+  padding: 7px 10px;
+  border-radius: 14px;
+  background: rgba(4, 8, 18, 0.62);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.exp-hp.right {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.exp-hp-main {
+  flex: 1;
+  min-width: 0;
+}
+.exp-hp-name {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.exp-hp.right .exp-hp-name {
+  flex-direction: row-reverse;
+}
+.exp-hp-name b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.exp-hp-sub {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.exp-hp-weak {
+  font-size: 10px;
+  color: #ffd35d;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.exp-hp-track {
+  position: relative;
+  height: 8px;
+  margin: 4px 0 2px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.exp-hp-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  transition: transform 0.25s ease-out;
+  border-radius: 8px;
+}
+.exp-hp.right .exp-hp-fill {
+  transform-origin: 100% 50%;
+}
+.exp-hp-track.low {
+  animation: exp-lowpulse 0.8s ease-in-out infinite;
+}
+@keyframes exp-lowpulse {
+  50% {
+    opacity: 0.6;
+  }
+}
+.exp-hp-num {
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.exp-hud-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.exp-wave {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(4, 8, 18, 0.62);
+  border: 1px solid var(--line-2);
+}
+.exp-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.exp-timer.hot {
+  color: var(--danger);
+}
+.exp-ring {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+.exp-ring svg {
+  position: absolute;
+  inset: 0;
+}
+.exp-ring svg circle {
+  transition: stroke-dashoffset 0.2s linear;
+}
+.exp-ring-icon {
+  color: var(--rc);
+  opacity: 0.6;
+}
+.exp-ring.ready .exp-ring-icon {
+  opacity: 1;
+  animation: exp-pulse 0.9s ease-in-out infinite;
+}
+
+/* Fighters */
+.exp-fighter {
+  position: absolute;
+  bottom: 8%;
+  width: 30%;
+  aspect-ratio: 1;
+  z-index: 3;
+}
+.exp-player {
+  left: 9%;
+}
+.exp-enemy {
+  right: 9%;
+}
+.exp-motion {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.exp-pose {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 90%;
+  transition: transform 0.22s ease-out, opacity 0.2s;
+}
+.exp-pose > svg,
+.exp-mirror > svg {
+  display: block;
+}
+.exp-mirror {
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1);
+}
+.exp-pose.rear {
+  transform: translateX(7%) rotate(6deg) scale(1.03);
+}
+.exp-pose.rear.heavy {
+  transform: translateX(9%) rotate(4deg) scale(1.12);
+}
+.exp-pose.dodging {
+  opacity: 0.72;
+}
+.exp-pose.dissolve {
+  animation: exp-dissolve 0.9s ease-in forwards;
+}
+@keyframes exp-dissolve {
+  to {
+    opacity: 0;
+    transform: translateY(6%) scale(0.75, 0.4);
+  }
+}
+.exp-enter {
+  animation: exp-enter 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes exp-enter {
+  from {
+    opacity: 0;
+    transform: translateX(45%);
+  }
+}
+.exp-brace-icon {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  margin-left: -11px;
+  color: #5da9ff;
+  filter: drop-shadow(0 0 8px #5da9ff);
+  animation: exp-pulse 1s ease-in-out infinite;
+}
+.exp-hitflash {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.exp-hitflash.hurt {
+  background: radial-gradient(circle, rgba(255, 70, 90, 0.95), rgba(255, 70, 90, 0) 70%);
+}
+
+/* Telegraph */
+.exp-telegraph {
+  position: absolute;
+  left: 50%;
+  top: -4%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.exp-bang {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(22px, 3.6vw, 36px);
+  line-height: 1;
+  color: #ff4d5e;
+  text-shadow: 0 0 14px #ff4d5e, 0 0 2px #fff;
+  animation: exp-pulse 0.35s ease-in-out infinite;
+}
+.exp-telegraph.heavy .exp-bang {
+  color: #ff9a3d;
+  text-shadow: 0 0 18px #ff9a3d, 0 0 2px #fff;
+}
+.exp-wind {
+  position: relative;
+  width: clamp(70px, 12vw, 120px);
+  height: 8px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 77, 94, 0.5);
+  overflow: hidden;
+}
+.exp-wind-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #ff9a3d, #ff4d5e);
+  transform-origin: 0 50%;
+}
+.exp-wind-zone {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.45);
+  border-left: 1px solid #fff;
+}
+.exp-wind-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffb35d;
+  white-space: nowrap;
+}
+@keyframes exp-pulse {
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+/* Effects */
+.exp-beam {
+  position: absolute;
+  left: 30%;
+  right: 24%;
+  bottom: 30%;
+  height: 16px;
+  border-radius: 16px;
+  transform-origin: 0 50%;
+  z-index: 4;
+  box-shadow: 0 0 26px var(--pel), 0 0 60px var(--pel);
+  animation: exp-beam 0.7s ease-out forwards;
+  pointer-events: none;
+}
+.exp-beam-core {
+  position: absolute;
+  inset: 5px 0;
+  border-radius: 6px;
+  background: #fff;
+  opacity: 0.85;
+}
+@keyframes exp-beam {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  35% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1) scaleY(0.15);
+    opacity: 0;
+  }
+}
+.exp-burst {
+  position: absolute;
+  bottom: 30%;
+  width: 0;
+  height: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.exp-burst.enemy {
+  right: 24%;
+}
+.exp-burst.player {
+  left: 24%;
+}
+.exp-burst i {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bc);
+  box-shadow: 0 0 10px var(--bc);
+  animation: exp-burst 0.75s ease-out forwards;
+}
+.exp-burst.big i {
+  width: 10px;
+  height: 10px;
+}
+@keyframes exp-burst {
+  from {
+    transform: rotate(var(--a)) translateX(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(var(--a)) translateX(var(--r)) scale(0.2);
+    opacity: 0;
+  }
+}
+.exp-float {
+  position: absolute;
+  bottom: 56%;
+  z-index: 7;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 22px;
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: exp-float 1s ease-out forwards;
+}
+.exp-float.enemy {
+  right: 22%;
+}
+.exp-float.player {
+  left: 22%;
+}
+.exp-float.crit {
+  font-size: 30px;
+  color: #ffe14d;
+}
+.exp-float.hurt {
+  color: #ff5d7a;
+}
+.exp-float.braced {
+  color: #8cc4ff;
+  font-size: 18px;
+}
+.exp-float.dodge {
+  color: #5dffb4;
+  font-size: 18px;
+}
+.exp-float.perfect {
+  color: #7affdd;
+  font-size: 26px;
+  text-shadow: 0 0 16px #2bf0c0, 0 2px 0 rgba(0, 0, 0, 0.6);
+}
+.exp-float.heal {
+  color: #7dff8a;
+  font-size: 15px;
+}
+.exp-float.special {
+  font-size: 38px;
+  color: var(--pel);
+  text-shadow: 0 0 18px var(--pel), 0 2px 0 rgba(0, 0, 0, 0.6);
+}
+@keyframes exp-float {
+  0% {
+    transform: translate(var(--dx), 10px) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    transform: translate(var(--dx), 0) scale(1.15);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), -60px) scale(1);
+    opacity: 0;
+  }
+}
+.exp-callout {
+  position: absolute;
+  left: 6%;
+  top: 26%;
+  z-index: 7;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid;
+  background: rgba(4, 8, 18, 0.72);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: exp-callout 1.5s ease-out forwards;
+}
+@keyframes exp-callout {
+  0% {
+    transform: translateY(8px) scale(0.85);
+    opacity: 0;
+  }
+  12% {
+    transform: translateY(0) scale(1.05);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+}
+.exp-banner {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(26px, 6vw, 58px);
+  letter-spacing: 0.12em;
+  color: #fff;
+  text-shadow: 0 0 24px var(--env), 0 4px 0 rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  animation: exp-banner 1.4s ease-out forwards;
+}
+.exp-banner.danger {
+  color: #ff5d7a;
+  text-shadow: 0 0 24px #ff2a4a, 0 4px 0 rgba(0, 0, 0, 0.5);
+}
+.exp-banner.win,
+.exp-banner.lose {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
+  animation: exp-banner-in 0.5s ease-out both;
+}
+.exp-banner.win {
+  color: #b6fff0;
+  text-shadow: 0 0 30px #2bf0c0, 0 4px 0 rgba(0, 0, 0, 0.5);
+}
+.exp-banner.lose {
+  color: #ffb35d;
+  text-shadow: 0 0 30px #ff5d2a, 0 4px 0 rgba(0, 0, 0, 0.5);
+}
+@keyframes exp-banner {
+  0% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  15% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+}
+@keyframes exp-banner-in {
+  from {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+.exp-screenflash {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.exp-intro-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4%;
+  z-index: 6;
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* Commands */
+.exp-commands {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 14px auto 0;
+  max-width: 760px;
+}
+.exp-cmd {
+  --c: var(--bio);
+  position: relative;
+  overflow: hidden;
+  min-height: 88px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 30%, rgba(8, 14, 28, 0.9)), color-mix(in srgb, var(--c) 10%, rgba(8, 14, 28, 0.9)));
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: transform 0.1s ease, border-color 0.2s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.exp-cmd:active {
+  transform: scale(0.96);
+}
+.exp-cmd:focus-visible {
+  outline: 2px solid var(--c);
+  outline-offset: 3px;
+}
+.exp-cmd[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: default;
+}
+.exp-cmd > span:not(.exp-cmd-cool) {
+  position: relative;
+  z-index: 1;
+}
+.exp-cmd-cool {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.58);
+  transform-origin: 50% 0;
+  pointer-events: none;
+}
+.exp-cmd.charging .exp-cmd-cool {
+  background: rgba(0, 0, 0, 0.42);
+}
+.exp-cmd-icon {
+  color: var(--c);
+  display: grid;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--c) 70%, transparent));
+}
+.exp-cmd-label {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.exp-cmd-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c);
+  font-variant-numeric: tabular-nums;
+}
+.exp-cmd-keys {
+  position: absolute !important;
+  top: 6px;
+  right: 8px;
+  display: flex;
+  gap: 3px;
+}
+.exp-cmd-keys kbd {
+  font-family: var(--font);
+  font-size: 10px;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--line-2);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--ink-3);
+}
+.exp-cmd.ready {
+  border-color: var(--c);
+}
+.exp-cmd.ready::after,
+.exp-cmd.hot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 26px var(--c), 0 0 0 2px var(--c);
+  opacity: 0;
+  animation: exp-glow 0.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.exp-cmd.hot::after {
+  animation-duration: 0.45s;
+}
+.exp-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin: 12px auto 0;
+  max-width: 760px;
+}
+.exp-tip b {
+  color: var(--ink-2);
+}
+
+/* ---------- Result ---------- */
+.exp-result-head {
+  text-align: center;
+  margin: 4px 0 18px;
+}
+.exp-result-head h2 {
+  margin: 6px 0;
+}
+.exp-result-head.win h2 {
+  background: linear-gradient(90deg, #b6fff0, #2bf0c0 50%, #d98bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(43, 240, 192, 0.4));
+}
+.exp-result-head.lose h2 {
+  color: #ffb35d;
+}
+.exp-result-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 14px;
+  align-items: start;
+}
+.exp-result-grid .exp-mini-title:first-child {
+  margin-top: 0;
+}
+.exp-rewards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.exp-reward {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+  background: color-mix(in srgb, var(--c) 10%, rgba(6, 10, 22, 0.6));
+}
+.exp-reward-icon {
+  grid-row: span 2;
+  color: var(--c);
+  display: grid;
+}
+.exp-reward-val {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--c);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.exp-reward-label {
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+.exp-xp {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.exp-xp-track {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.exp-xp-fill,
+.exp-xp-prev {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  border-radius: 10px;
+}
+.exp-xp-fill {
+  background: linear-gradient(90deg, var(--bio), var(--shard));
+  box-shadow: 0 0 12px rgba(43, 240, 192, 0.5);
+}
+.exp-xp-prev {
+  background: rgba(255, 255, 255, 0.25);
+}
+.exp-xp-label {
+  font-size: 12px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.exp-ready {
+  color: var(--shard);
+  font-weight: 700;
+}
+.exp-drift {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+.exp-sample {
+  text-align: center;
+}
+.exp-sample .exp-badges {
+  justify-content: center;
+  margin: 6px 0;
+}
+.exp-sample-art {
+  width: min(170px, 60%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 60%, rgba(43, 240, 192, 0.18), transparent 70%);
+}
+.exp-sample-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 16px;
+}
+.exp-new {
+  color: #ff4fd8;
+  border-color: rgba(255, 79, 216, 0.6);
+  box-shadow: 0 0 14px rgba(255, 79, 216, 0.4);
+  animation: exp-pulse 1.2s ease-in-out infinite;
+}
+.exp-result-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.exp-result.glass {
+  padding: 24px;
+  text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1080px) {
+  .exp-launch {
+    bottom: calc(var(--nav-h) + 10px);
+  }
+  .exp-result-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .exp-sample {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 900px) {
+  .exp-select {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .exp-hero {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+  .exp-sub-grid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .exp-envs {
+    grid-template-columns: 1fr;
+  }
+  .exp-launch {
+    padding: 10px 12px;
+  }
+  .exp-launch-actions,
+  .exp-begin {
+    width: 100%;
+  }
+  .exp-launch-actions .btn {
+    flex: 1;
+  }
+  .exp-begin {
+    min-width: 0;
+  }
+  .exp-arena {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+  }
+  .exp-fighter {
+    width: 38%;
+    bottom: 9%;
+  }
+  .exp-player {
+    left: 4%;
+  }
+  .exp-enemy {
+    right: 4%;
+  }
+  .exp-hud {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+  }
+  .exp-hp {
+    width: 42%;
+    padding: 5px 7px;
+    gap: 5px;
+  }
+  .exp-hp-sub,
+  .exp-hp-weak {
+    display: none;
+  }
+  .exp-ring,
+  .exp-ring svg {
+    width: 30px;
+    height: 30px;
+  }
+  .exp-float {
+    font-size: 18px;
+  }
+  .exp-float.crit {
+    font-size: 24px;
+  }
+  .exp-float.special {
+    font-size: 28px;
+  }
+  .exp-callout {
+    top: 30%;
+    font-size: 12.5px;
+  }
+  .exp-commands {
+    gap: 8px;
+  }
+  .exp-cmd {
+    min-height: 96px;
+  }
+  .exp-result-grid {
+    grid-template-columns: 1fr;
+  }
+  .exp-rewards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (hover: none) {
+  .exp-cmd-keys {
+    display: none;
+  }
+}
+
+.reduced-motion .exp-floor-glow,
+.reduced-motion .exp-bang,
+.reduced-motion .exp-scene-bolt {
+  animation: none;
+}

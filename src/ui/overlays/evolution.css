@@ -1,0 +1,644 @@
+/* Evolution reveal overlay. All classes prefixed `evo-`. Animations use transform/opacity. */
+
+@property --evo-amp {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.evo {
+  --ec: #2bf0c0;
+  --ec2: #7affdd;
+  --ed: #04121a;
+  --subject: 280px;
+  --cy: 45%;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  color: var(--ink);
+}
+.evo-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% var(--cy), color-mix(in srgb, var(--ed) 85%, black), #010206 72%);
+}
+.evo-glowfield {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background: radial-gradient(circle at 50% var(--cy), color-mix(in srgb, var(--ec) 45%, transparent), color-mix(in srgb, var(--ec2) 14%, transparent) 35%, transparent 65%);
+  transition: opacity 2.6s ease-in;
+}
+.evo-p-charge .evo-glowfield {
+  opacity: 0.75;
+}
+.evo-p-morph .evo-glowfield,
+.evo-p-burst .evo-glowfield {
+  opacity: 1;
+  transition-duration: 0.4s;
+}
+.evo-p-reveal .evo-glowfield {
+  opacity: 0.45;
+  transition-duration: 1.2s;
+}
+
+/* ---------- Background FX (rays + explosion) ---------- */
+.evo-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.evo-rays {
+  position: absolute;
+  left: 50%;
+  top: var(--cy);
+  width: 180vmax;
+  height: 180vmax;
+  margin: -90vmax 0 0 -90vmax;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.5s, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.evo-rays::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--ec) 42%, transparent) 0deg 5deg,
+    transparent 5deg 14deg,
+    color-mix(in srgb, var(--ec2) 30%, transparent) 14deg 17deg,
+    transparent 17deg 30deg
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0, rgba(0, 0, 0, 0.6) 14%, transparent 44%);
+  mask-image: radial-gradient(circle, #000 0, rgba(0, 0, 0, 0.6) 14%, transparent 44%);
+  animation: evo-spin 30s linear infinite;
+}
+.evo-p-burst .evo-rays {
+  opacity: 1;
+  transform: scale(1);
+}
+.evo-p-burst .evo-rays::before {
+  animation-duration: 5s;
+}
+.evo-p-reveal .evo-rays {
+  opacity: 0.5;
+  transform: scale(1);
+}
+.evo-explosion {
+  position: absolute;
+  left: 50%;
+  top: var(--cy);
+  width: 0;
+  height: 0;
+}
+.evo-explosion i {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  border-radius: 50%;
+}
+.evo-shock {
+  position: absolute;
+  left: -50px;
+  top: -50px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 40px var(--ec), inset 0 0 40px var(--ec2);
+}
+.evo-shock-2 {
+  border: 8px solid color-mix(in srgb, var(--ec) 70%, white);
+}
+.evo-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% var(--cy), #ffffff, rgba(255, 255, 255, 0.94) 40%, color-mix(in srgb, var(--ec) 28%, white));
+}
+
+/* ---------- Build-up stage ---------- */
+.evo-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+.evo-subject {
+  position: absolute;
+  left: 50%;
+  top: var(--cy);
+  width: var(--subject);
+  height: var(--subject);
+  margin: calc(var(--subject) / -2) 0 0 calc(var(--subject) / -2);
+}
+.evo-subject-aura {
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--ec) 50%, transparent), transparent 65%);
+  opacity: 0.5;
+  animation: evo-pulse 2.4s ease-in-out infinite;
+}
+.evo-p-charge .evo-subject-aura {
+  animation-duration: 0.9s;
+}
+.evo-p-morph .evo-subject-aura {
+  animation-duration: 0.3s;
+}
+.evo-subject-art {
+  position: absolute;
+  inset: 0;
+}
+.evo-p-charge .evo-subject-art {
+  animation:
+    evo-amp 2.8s ease-in forwards,
+    evo-tremble 0.08s linear infinite;
+}
+.evo-p-morph .evo-subject-art {
+  --evo-amp: 3px;
+  animation: evo-tremble 0.06s linear infinite;
+}
+.evo-subject-glow {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), color-mix(in srgb, var(--ec2) 60%, transparent) 35%, transparent 68%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 2.6s ease-in;
+}
+.evo-p-charge .evo-subject-glow {
+  opacity: 0.75;
+}
+.evo-p-morph .evo-subject-glow {
+  opacity: 0.45;
+  transition-duration: 0.3s;
+}
+
+.evo-morph,
+.evo-sil {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.evo-sil svg {
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px var(--ec)) drop-shadow(0 0 26px var(--ec));
+}
+
+.evo-rings {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.evo-rings i {
+  position: absolute;
+  left: -160px;
+  top: -160px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--ec) 75%, white);
+  box-shadow: 0 0 22px var(--ec), inset 0 0 22px var(--ec);
+  opacity: 0;
+  animation: evo-ring 1.6s ease-in infinite;
+}
+.evo-rings i:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.evo-rings i:nth-child(3) {
+  animation-delay: 0.8s;
+}
+.evo-rings i:nth-child(4) {
+  animation-delay: 1.2s;
+}
+.evo-p-morph .evo-rings i {
+  animation-duration: 0.6s;
+}
+.evo-p-morph .evo-rings i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.evo-p-morph .evo-rings i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.evo-p-morph .evo-rings i:nth-child(4) {
+  animation-delay: 0.45s;
+}
+
+.evo-converge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.evo-converge i {
+  position: absolute;
+  left: 0;
+  top: -1.5px;
+  height: 3px;
+  border-radius: 3px;
+}
+
+.evo-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--cy) + var(--subject) / 2 + 40px);
+  padding: 0 16px;
+  text-align: center;
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ec) 60%, white);
+  text-shadow: 0 0 16px var(--ec);
+}
+.evo-dots i {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: evo-dot 1s ease-in-out infinite;
+}
+.evo-dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.evo-dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.evo-skip {
+  position: absolute;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 5;
+}
+
+/* ---------- Reveal ---------- */
+.evo-scroll {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.evo-reveal {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 18px calc(40px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.evo-hero {
+  position: relative;
+  width: 300px;
+  aspect-ratio: 1;
+  flex: none;
+}
+.evo-hero-aura {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--ec) 55%, white 10%), color-mix(in srgb, var(--ec) 18%, transparent) 45%, transparent 70%);
+}
+.evo-hero-aura::after {
+  content: '';
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--ec) 60%, transparent);
+  animation: evo-halo 3s ease-out infinite;
+}
+.evo-hero-art {
+  position: absolute;
+  inset: 0;
+}
+.evo-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.evo-stage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ec) 70%, white);
+  border: 1px solid color-mix(in srgb, var(--ec) 50%, transparent);
+  background: color-mix(in srgb, var(--ec) 12%, transparent);
+}
+.evo-name {
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 900;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.evo-name b {
+  text-transform: uppercase;
+  color: var(--ec);
+  text-shadow: 0 0 24px color-mix(in srgb, var(--ec) 70%, transparent), 0 0 60px color-mix(in srgb, var(--ec) 35%, transparent);
+}
+.evo-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.evo-panels {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 16px;
+  align-items: start;
+}
+.evo-panel {
+  padding: 16px;
+}
+.evo-compare-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+.evo-fig {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+.evo-fig svg {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+}
+.evo-fig figcaption {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.evo-fig-after {
+  border-color: color-mix(in srgb, var(--ec) 50%, transparent);
+  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--ec) 18%, transparent), transparent 70%);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--ec) 20%, transparent);
+}
+.evo-fig-after figcaption {
+  color: var(--ec);
+}
+.evo-arrow {
+  display: grid;
+  place-items: center;
+  color: var(--ec);
+  animation: evo-nudge 1.6s ease-in-out infinite;
+}
+
+.evo-stats {
+  display: grid;
+  gap: 3px;
+}
+.evo-stat-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px 14px 40px 46px;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.evo-stat-row:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.03);
+}
+.evo-stat-label {
+  color: var(--ink-2);
+}
+.evo-stat-before {
+  text-align: right;
+  color: var(--ink-3);
+}
+.evo-stat-arrow {
+  color: var(--ink-3);
+}
+.evo-stat-after {
+  font-weight: 700;
+}
+.evo-stat-diff {
+  text-align: right;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+.evo-stat-diff.up {
+  color: #6dff9e;
+  text-shadow: 0 0 10px rgba(109, 255, 158, 0.5);
+}
+.evo-stat-diff.down {
+  color: var(--danger);
+}
+
+.evo-changes ol {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.evo-changes li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+.evo-change-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--ec);
+  box-shadow: 0 0 10px var(--ec);
+}
+.evo-changes b {
+  font-family: var(--display);
+  font-size: 15px;
+}
+.evo-changes p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.evo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes evo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes evo-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+@keyframes evo-amp {
+  from {
+    --evo-amp: 0px;
+  }
+  to {
+    --evo-amp: 4px;
+  }
+}
+@keyframes evo-tremble {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(calc(var(--evo-amp) * -1), calc(var(--evo-amp) * 0.5));
+  }
+  50% {
+    transform: translate(var(--evo-amp), calc(var(--evo-amp) * -0.5));
+  }
+  75% {
+    transform: translate(calc(var(--evo-amp) * -0.5), calc(var(--evo-amp) * -1));
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes evo-ring {
+  0% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+  30% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+@keyframes evo-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes evo-halo {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+@keyframes evo-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+.evo-reduced *,
+.evo-reduced *::before,
+.evo-reduced *::after {
+  animation: none !important;
+}
+.evo-reduced .evo-glowfield,
+.evo-reduced .evo-subject-glow,
+.evo-reduced .evo-rays {
+  transition-duration: 0.2s !important;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 760px) {
+  .evo {
+    --subject: 200px;
+    --cy: 42%;
+  }
+  .evo-rings i {
+    left: -120px;
+    top: -120px;
+    width: 240px;
+    height: 240px;
+  }
+  .evo-caption {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+  }
+  .evo-reveal {
+    padding: 18px 12px calc(28px + env(safe-area-inset-bottom));
+    gap: 14px;
+  }
+  .evo-hero {
+    width: 210px;
+  }
+  .evo-panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .evo-panel {
+    padding: 12px;
+  }
+  .evo-stat-row {
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+  .evo-actions {
+    width: 100%;
+  }
+  .evo-actions .btn {
+    flex: 1 1 100%;
+  }
+}

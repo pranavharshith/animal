@@ -1,0 +1,540 @@
+/* Creature detail overlay */
+.det-modal {
+  padding-top: 12px;
+}
+.det-modal .modal-head {
+  margin-bottom: 4px;
+}
+.det-modal-title {
+  font-family: var(--font);
+}
+
+.det {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+/* Art column */
+.det-art {
+  position: sticky;
+  top: 0;
+  aspect-ratio: 1 / 1.08;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--el) 35%, transparent);
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+.det-art-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--el) 40%, transparent), transparent 62%),
+    radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--el2) 22%, transparent), transparent 50%),
+    linear-gradient(180deg, color-mix(in srgb, var(--eldark) 80%, #05070f), #04060d);
+}
+.det-art-ring {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 13%;
+  width: 70%;
+  height: 16%;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  border: 2px solid color-mix(in srgb, var(--el) 70%, transparent);
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--el) 30%, transparent), transparent 70%);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--el) 50%, transparent);
+  animation: det-ring 3.2s ease-in-out infinite;
+}
+@keyframes det-ring {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.det-art-svg {
+  width: 88%;
+  aspect-ratio: 1;
+  margin-top: -6%;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--el) 30%, transparent));
+}
+.det-art-foot {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.det-art-foot .chip {
+  background: rgba(4, 8, 18, 0.6);
+  color: var(--ink-2);
+}
+
+/* Info column */
+.det-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.det-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.det-name {
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 900;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+  text-shadow: 0 0 26px color-mix(in srgb, var(--el) 35%, transparent);
+}
+.det-pencil {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  opacity: 0.7;
+}
+.det-pencil:hover {
+  opacity: 1;
+}
+.det-name-edit {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.det-name-input {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  max-width: 340px;
+}
+.det-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.det-stage {
+  color: var(--ink-2);
+}
+.det-active {
+  color: var(--bio-2);
+  border-color: rgba(43, 240, 192, 0.5);
+}
+.det-origin {
+  margin: 0;
+  font-size: 13px;
+}
+.det-origin b {
+  color: var(--ink);
+}
+
+/* Evolution box */
+.det-evo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(217, 139, 255, 0.25);
+  background: linear-gradient(90deg, rgba(217, 139, 255, 0.1), rgba(255, 209, 102, 0.04));
+}
+.det-evo.ready {
+  border-color: rgba(217, 139, 255, 0.7);
+  box-shadow: 0 0 26px rgba(217, 139, 255, 0.25);
+}
+.det-evo.final {
+  color: var(--dxp);
+  border-color: rgba(255, 209, 102, 0.35);
+  background: linear-gradient(90deg, rgba(255, 209, 102, 0.12), transparent);
+}
+.det-evo.final div {
+  display: flex;
+  flex-direction: column;
+}
+.det-evo.final b {
+  color: var(--ink);
+  font-family: var(--display);
+}
+.det-evo-main {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.det-evo-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.det-evo-xp {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dxp);
+  font-variant-numeric: tabular-nums;
+}
+.det-evo-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.det-evo-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--dxp), var(--shard));
+  box-shadow: 0 0 10px rgba(217, 139, 255, 0.5);
+}
+.det-evo-cost {
+  font-size: 12px;
+  color: var(--shard);
+}
+.det-evo-cost.short {
+  color: var(--ink-2);
+}
+.det-evo-btn {
+  flex: none;
+}
+.det-evo.ready .det-evo-btn {
+  animation: det-evo-pulse 1.6s ease-in-out infinite;
+}
+@keyframes det-evo-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 139, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(217, 139, 255, 0);
+  }
+}
+
+/* Actions */
+.det-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.det-release.btn-primary {
+  color: #fff;
+}
+
+/* Tabs */
+.det-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.det-tabs::-webkit-scrollbar {
+  display: none;
+}
+.det-tab {
+  position: relative;
+  flex: none;
+  padding: 9px 12px;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.det-tab:hover {
+  color: var(--ink-2);
+}
+.det-tab.on {
+  color: var(--ink);
+}
+.det-tab-ink {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--el);
+  box-shadow: 0 0 10px var(--el);
+}
+.det-panel {
+  min-height: 190px;
+}
+.det-note {
+  font-size: 13px;
+  margin: 10px 0 0;
+}
+
+/* Genes */
+.det-gene-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+.det-gene {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--line);
+  min-width: 0;
+}
+.det-gene dt {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 700;
+}
+.det-gene dd {
+  margin: 1px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.det-gene-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+.det-swatches {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.det-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.det-swatch i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+}
+.det-potential {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.det-pips {
+  display: inline-flex;
+  gap: 4px;
+}
+.det-pips i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line-2);
+}
+.det-pips i.on {
+  background: var(--dxp);
+  border-color: transparent;
+  box-shadow: 0 0 8px var(--dxp);
+}
+.det-anomaly {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #ff4fd8;
+}
+
+/* Mutations */
+.det-mut-list {
+  display: grid;
+  gap: 8px;
+}
+.det-mut {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--c) 50%, transparent);
+  background: radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--c) 18%, transparent), transparent 70%);
+}
+.det-mut > svg {
+  flex: none;
+  color: var(--c);
+  filter: drop-shadow(0 0 6px var(--c));
+}
+.det-mut div {
+  display: flex;
+  flex-direction: column;
+}
+.det-mut small {
+  color: var(--ink-2);
+}
+.det-drift {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.det-drift-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.det-drift-chip {
+  color: var(--shard);
+  border-style: dashed;
+  border-color: rgba(217, 139, 255, 0.5);
+}
+
+/* Stats */
+.det-stats {
+  display: grid;
+  gap: 10px;
+  max-width: 460px;
+  padding-top: 4px;
+}
+
+/* Habitats */
+.det-envs {
+  display: grid;
+  gap: 8px;
+}
+.det-env {
+  display: grid;
+  grid-template-columns: 120px 1fr 56px;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+.det-env-name {
+  color: var(--c);
+  font-weight: 600;
+}
+.det-env.none .det-env-name {
+  color: var(--ink-3);
+}
+.det-env-track {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.det-env-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--c);
+  box-shadow: 0 0 10px var(--c);
+}
+.det-env-runs {
+  text-align: right;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* History */
+.det-history {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 4px;
+  display: grid;
+  gap: 0;
+  max-height: 260px;
+  overflow: auto;
+}
+.det-hist {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  padding-bottom: 12px;
+}
+.det-hist::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  bottom: 0;
+  width: 2px;
+  background: var(--line);
+}
+.det-hist:last-child::before {
+  display: none;
+}
+.det-hist-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--bio);
+  background: rgba(43, 240, 192, 0.1);
+  border: 1px solid rgba(43, 240, 192, 0.35);
+}
+.det-hist.k-evolution .det-hist-icon,
+.det-hist.k-mutation .det-hist-icon {
+  color: var(--shard);
+  background: rgba(217, 139, 255, 0.1);
+  border-color: rgba(217, 139, 255, 0.4);
+}
+.det-hist.k-expedition .det-hist-icon {
+  color: var(--dxp);
+  background: rgba(255, 209, 102, 0.1);
+  border-color: rgba(255, 209, 102, 0.4);
+}
+.det-hist p {
+  margin: 3px 0 0;
+  font-size: 13px;
+}
+.det-hist time {
+  font-size: 11px;
+}
+
+@media (max-width: 760px) {
+  .det {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .det-art {
+    position: relative;
+    width: min(300px, 100%);
+    justify-self: center;
+  }
+  .det-gene-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .det-evo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .det-env {
+    grid-template-columns: 96px 1fr 48px;
+    font-size: 12px;
+  }
+}
+
+.reduced-motion .det-art-ring,
+.reduced-motion .det-evo-btn {
+  animation: none !important;
+}

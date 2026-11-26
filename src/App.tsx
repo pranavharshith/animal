@@ -57,6 +57,7 @@ export default function App() {
   const go = useCallback((s: Screen) => {
     play('click');
     setScreen(s);
+    if (s !== 'expedition') setBackdrop(s === 'sanctuary' ? 'verdant_wilds' : 'lab');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -82,9 +83,7 @@ export default function App() {
     window.addEventListener('wildshift:backdrop', onBd);
     return () => window.removeEventListener('wildshift:backdrop', onBd);
   }, []);
-  useEffect(() => {
-    if (screen !== 'expedition') setBackdrop(screen === 'sanctuary' ? 'verdant_wilds' : 'lab');
-  }, [screen]);
+
 
   const reduced = state.settings.reducedMotion;
   const Current = { home: HomeScreen, lab: LabScreen, expedition: ExpeditionScreen, archive: ArchiveScreen, sanctuary: SanctuaryScreen, collection: CollectionScreen }[screen];
@@ -147,9 +146,9 @@ export default function App() {
             <motion.div
               key={screen}
               className="screen"
-              initial={{ opacity: 0, y: reduced ? 0 : 14, filter: 'blur(6px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: reduced ? 0 : -10, filter: 'blur(6px)' }}
+              initial={{ opacity: 0, y: reduced ? 0 : 14 }}
+              animate={{ opacity: 1, y: 0, transitionEnd: { transform: 'none' } }}
+              exit={{ opacity: 0, y: reduced ? 0 : -10 }}
               transition={{ duration: 0.28, ease: 'easeOut' }}
             >
               <Current />
